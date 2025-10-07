@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ajuda • PTR</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="boot.js"></script>
+<script src="i18n.js"></script>
+</head>
+<body>
+<header class="header-inline">
+  <img id="logoHead" alt="logo" style="display:none;left:20px;position:absolute;max-height:32px">
+  <h1>Ajuda do Sistema PTR</h1>
+</header>
+
+<nav class="navbar">
+  <a href="index.html">← Voltar à PTR</a>
+  <a data-nav="settings" href="settings.html">Configurações</a>
+  <a data-nav="dashboard" href="dashboard.html">Dashboard</a>
+  <a data-nav="reports" href="reports.html">Relatórios</a>
+</nav>
+
+<main class="content">
+  <section class="card">
+    <div class="card-head"><h3>O que é a PTR?</h3><span class="badge">Visão geral</span></div>
+    <p>A <strong>Permissão de Trabalho de Risco (PTR)</strong> autoriza atividades com perigos específicos e registra condições, controles, responsáveis e <em>assinaturas legais</em>.</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Como preencher</h3><span class="badge">Passo a passo</span></div>
+    <ol>
+      <li><strong>Dados Iniciais</strong>: Empresa, PTR, data/hora, setor e descrição.</li>
+      <li><strong>Tipos de Atividades</strong>: direciona riscos e exigências.</li>
+      <li><strong>Riscos</strong>: até 8 por atividade.</li>
+      <li><strong>Equipamentos</strong>: os que serão usados.</li>
+      <li><strong>Checklist</strong>: 6 itens base + até 6 por atividade/equipamento, com <em>SIM/NÃO/N/A</em> e <b>Score 0–100</b>.</li>
+      <li><strong>Executantes</strong>: checagem de PA (se aplicável), NR-35/NR-33 válidos e assinatura.</li>
+      <li><strong>Responsáveis</strong>: Emissor, Líder e Responsável da Equipe — 3 assinaturas obrigatórias.</li>
+      <li><strong>Log de Não Conformidades</strong>: tudo que marcou “NÃO”.</li>
+      <li><strong>Concluir</strong>: gera PDF, JSON, ZIP e hash SHA-256.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Assinaturas</h3><span class="badge">Validade</span></div>
+    <ul>
+      <li><b>Desenho</b> na tela;</li>
+      <li><b>Facial</b> (foto via câmera);</li>
+      <li><b>Upload</b> de imagem.</li>
+    </ul>
+    <p>O PDF inclui código único e <strong>SHA-256</strong> do JSON para integridade.</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Contatos de Emergência</h3><span class="badge">Rápido acesso</span></div>
+    <div id="emergBox"></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s); const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
+const K_LOGO="SYS_LOGO", K_EMERG="SYS_EMERGENCY";
+(function(){const l=read(K_LOGO,null); if(l){const i=$("#logoHead"); i.src=l; i.style.display="block";}})();
+
+const em=read(K_EMERG,{ramal:"859", tst:"+55 19 98247-2752", amb:"+55 19 98369-5657", externos:[{nome:"Bombeiros",fone:"193",cod:""}]});
+$("#emergBox").innerHTML = `
+  <div class="grid">
+    <div class="field"><span>Ramal</span><div><b>${em.ramal||"—"}</b></div></div>
+    <div class="field"><span>Celular TST</span><div>${em.tst||"—"}</div></div>
+    <div class="field"><span>Ambulatório</span><div>${em.amb||"—"}</div></div>
+  </div>
+  <div class="card thin" style="margin-top:10px">
+    <div class="card-head"><h4>Números externos</h4><span class="badge">${(em.externos||[]).length}</span></div>
+    <ul>${(em.externos||[]).map(x=>`<li><b>${x.nome}</b>: ${x.fone}${x.cod?` • Código ${x.cod}`:""}</li>`).join("")||"<li>—</li>"}</ul>
+  </div>
+`;
+</script>
+</body>
+</html>

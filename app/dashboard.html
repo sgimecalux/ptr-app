@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard • PTR</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="boot.js"></script>
+<script src="i18n.js"></script>
+</head>
+<body>
+<header class="header-inline"><h1>Dashboard</h1></header>
+<nav class="navbar">
+  <a href="index.html">← PTR</a>
+  <a data-nav="reports" href="reports.html">Relatórios</a>
+  <a data-nav="settings" href="settings.html">Configurações</a>
+  <a data-nav="help" href="help.html">Ajuda</a>
+</nav>
+
+<main class="content">
+  <section class="card">
+    <div class="card-head"><h3>Filtros</h3><span class="badge">Período</span></div>
+    <div class="filters">
+      <label class="field"><span>De</span><input type="date" id="fDe"></label>
+      <label class="field"><span>Até</span><input type="date" id="fAte"></label>
+      <label class="field"><span>Agrupar por</span>
+        <select id="fGroup"><option value="day">Dia</option><option value="week">Semana</option><option value="month">Mês</option><option value="year">Ano</option></select>
+      </label>
+      <div style="align-self:end"><button class="btn" id="btnFiltrar">Aplicar</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Atividades por Tipo</h3><span class="badge">Contagem</span></div>
+    <canvas id="cAtv" height="240"></canvas>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Atividades por Equipamento</h3><span class="badge">Contagem</span></div>
+    <canvas id="cEqp" height="240"></canvas>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Atividades por Executor</h3><span class="badge">Contagem</span></div>
+    <canvas id="cExec" height="240"></canvas>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
+const ARCH="PTR_ARCHIVE";
+const data=read(ARCH,[]);
+
+function inRange(dt, d1, d2){
+  const t=new Date(dt).getTime();
+  if(d1 && t<new Date(d1).getTime()) return false;
+  if(d2 && t>new Date(d2).getTime()+86400000-1) return false;
+  return true;
+}
+
+function filterData(){
+  const de=document.getElementById("fDe").value;
+  const ate=document.getElementById("fAte").value;
+  return data.filter(x=>inRange(x.data, de, ate));
+}
+
+function countBy(arr, key){
+  const m=new Map();
+  arr.forEach(v=>m.set(v,(m.get(v)||0)+1));
+  return {labels:[...m.keys()], values:[...m.values()]};
+}
+
+let ch1,ch2,ch3;
+function draw(){
+  const rows=filterData();
+
+  // Atividades
+  const flatAtv=rows.flatMap(r=>r.atividades||[]);
+  const a=countBy(flatAtv,"");
+  // Equipamentos
+  const flatEqp=rows.flatMap(r=>r.equipamentos||[]);
+  const e=countBy(flatEqp,"");
+  // Executores
+  const flatExec=rows.flatMap(r=>r.executantes?.map(x=>x.nome)||[]);
+  const ex=countBy(flatExec,"");
+
+  const cfg=(labels,values)=>({type:'bar',data:{labels,datasets:[{data:values}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+  ch1 && ch1.destroy(); ch2 && ch2.destroy(); ch3 && ch3.destroy();
+  ch1=new Chart(document.getElementById("cAtv"), cfg(a.labels,a.values));
+  ch2=new Chart(document.getElementById("cEqp"), cfg(e.labels,e.values));
+  ch3=new Chart(document.getElementById("cExec"), cfg(ex.labels,ex.values));
+}
+document.getElementById("btnFiltrar").onclick=draw;
+draw();
+</script>
+</body>
+</html>

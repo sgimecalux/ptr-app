@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatórios • PTR</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="boot.js"></script>
+<script src="i18n.js"></script>
+</head>
+<body>
+<header class="header-inline"><h1>Relatórios</h1></header>
+<nav class="navbar">
+  <a href="index.html">← PTR</a>
+  <a data-nav="dashboard" href="dashboard.html">Dashboard</a>
+  <a data-nav="settings" href="settings.html">Configurações</a>
+  <a data-nav="help" href="help.html">Ajuda</a>
+</nav>
+
+<main class="content">
+  <section class="card">
+    <div class="card-head"><h3>Filtros</h3><span class="badge">Consulta</span></div>
+    <div class="filters">
+      <label class="field"><span>De</span><input type="date" id="fDe"></label>
+      <label class="field"><span>Até</span><input type="date" id="fAte"></label>
+      <label class="field"><span>Funcionário</span><input id="fPessoa" type="text" placeholder="Nome contém…"></label>
+      <label class="field"><span>Tipo de Atividade</span><input id="fAtv" type="text" placeholder="Texto contém…"></label>
+      <label class="field"><span>Equipamento</span><input id="fEqp" type="text" placeholder="Texto contém…"></label>
+      <div style="align-self:end"><button class="btn" id="btnFiltrar">Aplicar</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Resultados</h3><span class="badge" id="bCount">0</span></div>
+    <table class="table" id="tab"></table>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
+const ARCH="PTR_ARCHIVE";
+const rows=read(ARCH,[]);
+
+function inRange(dt, d1, d2){
+  const t=new Date(dt).getTime();
+  if(d1 && t<new Date(d1).getTime()) return false;
+  if(d2 && t>new Date(d2).getTime()+86400000-1) return false;
+  return true;
+}
+
+function apply(){
+  const de=$("#fDe").value, ate=$("#fAte").value, p=($("#fPessoa").value||"").toLowerCase(), a=($("#fAtv").value||"").toLowerCase(), e=($("#fEqp").value||"").toLowerCase();
+  const data=rows.filter(r=>{
+    if(!inRange(r.data,de,ate)) return false;
+    if(p && !(r.executantes||[]).some(x=>(x.nome||"").toLowerCase().includes(p))) return false;
+    if(a && !(r.atividades||[]).some(t=>t.toLowerCase().includes(a))) return false;
+    if(e && !(r.equipamentos||[]).some(t=>t.toLowerCase().includes(e))) return false;
+    return true;
+  });
+  $("#bCount").textContent=data.length;
+  const th=`<tr><th>Data</th><th>PTR</th><th>Setor</th><th>Atividades</th><th>Equipamentos</th><th>Executantes</th><th>Ações</th></tr>`;
+  const tr=data.map(r=>`<tr>
+    <td>${r.data}</td><td>${r.ptr}</td><td>${r.setor||"—"}</td>
+    <td>${(r.atividades||[]).join(", ")||"—"}</td>
+    <td>${(r.equipamentos||[]).join(", ")||"—"}</td>
+    <td>${(r.executantes||[]).map(x=>x.nome).join(", ")||"—"}</td>
+    <td><button class="btn" data-id="${r.uid}">JSON</button></td>
+  </tr>`).join("");
+  $("#tab").innerHTML = th + tr;
+
+  $("#tab").onclick=e=>{
+    const id=e.target.getAttribute("data-id"); if(!id) return;
+    const el=rows.find(x=>x.uid===id); if(!el) return;
+    const blob=new Blob([JSON.stringify(el.json,null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`${el.ptr.replace(/[^A-Za-z0-9]/g,"")}.json`; a.click(); URL.revokeObjectURL(a.href);
+  };
+}
+$("#btnFiltrar").onclick=apply; apply();
+</script>
+</body>
+</html>

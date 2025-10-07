@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configurações • PTR</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="boot.js"></script>
+<script src="i18n.js"></script>
+</head>
+<body>
+<header class="header-inline"><h1>Configurações</h1></header>
+
+<nav class="navbar">
+  <a data-nav="settings" href="index.html">← Voltar à PTR</a>
+  <a data-nav="dashboard" href="dashboard.html">Dashboard</a>
+  <a data-nav="reports" href="reports.html">Relatórios</a>
+  <a data-nav="help" href="help.html">Ajuda</a>
+</nav>
+
+<main class="content">
+  <!-- Tema, Idioma, Assinatura -->
+  <section class="card">
+    <div class="card-head"><h3>Tema & Idioma</h3><span class="badge">Preferências</span></div>
+    <div class="grid">
+      <label class="field"><span>Tema</span>
+        <select id="themeSel">
+          <option value="light">Light (padrão)</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <label class="field"><span>Idioma</span>
+        <select id="lang">
+          <option value="pt-BR">Português (Brasil)</option>
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+      <label class="field"><span>Tipo de Assinatura</span>
+        <select id="signMode">
+          <option value="draw">Desenho na tela</option>
+          <option value="facial">Facial (câmera)</option>
+          <option value="upload">Upload de imagem</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <!-- Identidade Visual -->
+  <section class="card">
+    <div class="card-head"><h3>Identidade Visual</h3><span class="badge">Logo</span></div>
+    <div class="grid">
+      <label class="field"><span>Importar logo (PNG/JPG)</span><input id="logoFile" type="file" accept="image/*"></label>
+      <div class="field"><span>Pré-visualização</span><img id="logoPreview" alt="logo" style="max-height:50px;object-fit:contain"></div>
+    </div>
+    <div class="row-actions" style="margin-top:8px;"><button id="btnLogoRemover" class="btn ghost">Remover logo</button></div>
+  </section>
+
+  <!-- Sistema / Versões -->
+  <section class="card">
+    <div class="card-head"><h3>Sistema / Versões</h3><span class="badge">Identificação</span></div>
+    <div class="grid">
+      <label class="field"><span>Versão</span><input id="sysVersion" type="text" value="1.0.0"></label>
+      <label class="field"><span>Código Revisão</span><input id="sysRevCode" type="text" value="PTR-REV-A"></label>
+      <label class="field"><span>Data Revisão</span><input id="sysRevDate" type="date"></label>
+    </div>
+  </section>
+
+  <!-- Sequência -->
+  <section class="card">
+    <div class="card-head"><h3>Sequência PTR</h3><span class="badge">Padrão</span></div>
+    <div class="grid"><label class="field"><span>Padrão</span><input id="ptrSeq" type="text" value="PTR-00000"></label></div>
+  </section>
+
+  <!-- Locais -->
+  <section class="card">
+    <div class="card-head"><h3>Locais de Trabalho</h3><span class="badge">Cadastro</span></div>
+    <div class="grid"><label class="field"><span>Novo Local (ENTER)</span><input id="localNome" type="text" placeholder="Ex.: Prédio ADM"></label></div>
+    <div id="listaLocais" class="list" style="margin-top:8px"></div>
+  </section>
+
+  <!-- Pessoas -->
+  <section class="card">
+    <div class="card-head"><h3>Pessoas e Permissões</h3><span class="badge">Equipe</span></div>
+    <div class="grid">
+      <label class="field"><span>Nome</span><input id="pNome" type="text"></label>
+      <label class="field"><span>CPF/MATRÍCULA</span><input id="pCPF" type="text"></label>
+      <label class="field"><span>Permissões</span>
+        <div class="list">
+          <label class="check"><input id="permExecutor" type="checkbox"> <span>Executor</span></label>
+          <label class="check"><input id="permEmissor" type="checkbox"> <span>Emissor</span></label>
+          <label class="check"><input id="permLider" type="checkbox"> <span>Líder do Setor</span></label>
+          <label class="check"><input id="permResp" type="checkbox"> <span>Responsável da Equipe</span></label>
+        </div>
+      </label>
+    </div>
+    <div class="grid">
+      <label class="field"><span>NR-35 (Altura) — Vencimento</span><input id="treina35" type="date"></label>
+      <label class="field"><span>NR-33 (Confinado) — Vencimento</span><input id="treina33" type="date"></label>
+    </div>
+    <p class="muted">Pressione ENTER no campo <strong>CPF/MATRÍCULA</strong> para cadastrar/atualizar.</p>
+    <div id="listaPessoas" class="list" style="margin-top:8px"></div>
+  </section>
+
+  <!-- Catálogos -->
+  <section class="card">
+    <div class="card-head"><h3>Catálogos</h3><span class="badge">Atividades & Equipamentos</span></div>
+    <div class="grid">
+      <label class="field"><span>Novo Tipo de Atividade (ENTER)</span><input id="catAtvItem" type="text"></label>
+      <div id="listaAtv" class="list"></div>
+      <label class="field"><span>Novo Tipo de Equipamento (ENTER)</span><input id="catEqpItem" type="text"></label>
+      <div id="listaEqp" class="list"></div>
+    </div>
+  </section>
+
+  <!-- Checklist -->
+  <section class="card">
+    <div class="card-head"><h3>Checklist</h3><span class="badge">Base / Atividades / Equipamentos</span></div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-head"><h4>Base</h4><span class="badge">Máx 6</span></div>
+        <div class="list" id="listaBase"></div>
+        <div class="grid">
+          <label class="field"><span>Novo item (ENTER)</span><input id="baseNovo" type="text" placeholder="Texto do item"></label>
+          <label class="field"><span>Peso (0–100)</span><input id="basePeso" type="number" value="10" min="0" max="100"></label>
+          <label class="check" style="align-self:end;"><input id="baseCritico" type="checkbox"> <span>Crítico</span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h4>Por Tipo de Atividade</h4><span class="badge">Máx 6 por tipo</span></div>
+        <label class="field"><span>Selecionar atividade</span><select id="selAtv"></select></label>
+        <div class="list" id="listaAtvChk"></div>
+        <div class="grid">
+          <label class="field"><span>Novo item (ENTER)</span><input id="atvNovo" type="text"></label>
+          <label class="field"><span>Peso</span><input id="atvPeso" type="number" value="10" min="0" max="100"></label>
+          <label class="check" style="align-self:end;"><input id="atvCritico" type="checkbox"> <span>Crítico</span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h4>Por Equipamento</h4><span class="badge">Máx 6 por tipo</span></div>
+        <label class="field"><span>Selecionar equipamento</span><select id="selEqp"></select></label>
+        <div class="list" id="listaEqpChk"></div>
+        <div class="grid">
+          <label class="field"><span>Novo item (ENTER)</span><input id="eqpNovo" type="text"></label>
+          <label class="field"><span>Peso</span><input id="eqpPeso" type="number" value="10" min="0" max="100"></label>
+          <label class="check" style="align-self:end;"><input id="eqpCritico" type="checkbox"> <span>Crítico</span></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pressões -->
+  <section class="card">
+    <div class="card-head"><h3>Pressões Permitidas (Global)</h3><span class="badge">Whitelist</span></div>
+    <div class="grid"><label class="field"><span>Nova leitura (ENTER) — ex.: 120/80</span><input id="bpAdd" type="text"></label></div>
+    <div id="listaBP" class="list" style="margin-top:8px"></div>
+  </section>
+
+  <!-- Emergência -->
+  <section class="card">
+    <div class="card-head"><h3>Contatos de Emergência</h3><span class="badge">Editável</span></div>
+    <div class="grid">
+      <label class="field"><span>Ramal (interno)</span><input id="eRamal" type="text" placeholder="859"></label>
+      <label class="field"><span>Celular TST</span><input id="eTST" type="text" placeholder="+55 19 98247-2752"></label>
+      <label class="field"><span>Ambulatório</span><input id="eAmb" type="text" placeholder="+55 19 98369-5657"></label>
+    </div>
+    <div class="grid">
+      <label class="field"><span>Externo • Nome</span><input id="extNome" type="text" placeholder="Bombeiros"></label>
+      <label class="field"><span>Externo • Telefone</span><input id="extFone" type="text" placeholder="19 3874-5545"></label>
+      <label class="field"><span>Externo • Código</span><input id="extCode" type="text" placeholder="0000000"></label>
+    </div>
+    <div class="row-actions"><button id="extAdd" class="btn">Adicionar externo</button></div>
+    <div id="listaExt" class="list" style="margin-top:8px"></div>
+  </section>
+
+  <!-- Créditos -->
+  <section class="card">
+    <div class="card-head"><h3>Créditos & Aviso Legal</h3><span class="badge">Rodapé do PDF</span></div>
+    <label class="field"><span>Texto</span>
+      <textarea id="credTexto" rows="4">Sistema desenvolvido pela equipe do SGI da Mecalux do Brasil. Uso interno. Proibida cópia/venda sem autorização.</textarea>
+    </label>
+  </section>
+
+  <!-- Backup & Restaurar -->
+  <section class="card">
+    <div class="card-head"><h3>Backup & Restauração</h3><span class="badge">JSON</span></div>
+    <div class="grid">
+      <div class="field">
+        <span>Exportar todos os dados (localStorage)</span>
+        <button id="btnBackup" class="btn">Baixar backup (.json)</button>
+      </div>
+      <div class="field">
+        <span>Restaurar de um arquivo (.json)</span>
+        <input id="inpRestore" type="file" accept="application/json">
+        <p class="muted">Ao restaurar, os dados atuais serão substituídos.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-actions">
+    <a class="btn" href="index.html">← Voltar</a>
+    <div>
+      <button id="btnReset" class="btn ghost">Restaurar Padrões</button>
+      <button id="btnSaveAll" class="btn primary">Salvar Tudo</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}; const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const todayISO=()=>new Date().toISOString().slice(0,10); function onEnter(el,fn){el.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();fn();}})}
+
+const K_SYS="SYS_META",K_PTR="PTR_SEQ",K_LOCAIS="LOC_LIST",K_PESSOAS="PESSOAS",K_ATIV="CAT_ATIVIDADES",K_EQPT="CAT_EQUIPAMENTOS",K_BP="BP_ALLOWED_GLOBAL",K_CRED="SYS_CREDITOS",K_LOGO="SYS_LOGO";
+const K_AVB="AVAL_BASE",K_AVA="AVAL_ATIVIDADES",K_AVE="AVAL_EQUIPAMENTOS";
+const K_THEME="SYS_THEME", K_LANG="SYS_LANG", K_SIGN="SIGN_MODE", K_EMERG="SYS_EMERGENCY";
+
+const APP_KEYS = ["SYS_META","PTR_SEQ","LOC_LIST","PESSOAS","CAT_ATIVIDADES","CAT_EQUIPAMENTOS","BP_ALLOWED_GLOBAL","SYS_CREDITOS","AVAL_BASE","AVAL_ATIVIDADES","AVAL_EQUIPAMENTOS","SYS_LOGO","PTR_COUNTER","PTR_DRAFT","PTR_ARCHIVE","PTR_LOGS","SYS_LANG","SYS_THEME","SIGN_MODE","SYS_EMERGENCY"];
+
+/* estado */
+const state={
+  theme:read(K_THEME,"light"),
+  lang:read(K_LANG,"pt-BR"),
+  sign:read(K_SIGN,"draw"),
+  sys:read(K_SYS,{version:"1.0.0",revCode:"PTR-REV-A",revDate:todayISO()}),
+  ptr:read(K_PTR,{pattern:"PTR-00000"}),
+  locais:read(K_LOCAIS,[{id:1,name:"Prédio ADM"}]),
+  pessoas:read(K_PESSOAS,[]),
+  atv:read(K_ATIV,["Trabalho em Altura","Espaço Confinado","Trabalho com Eletricidade","Trabalho à Quente","Içamento de Materiais","Escavação"]),
+  eqp:read(K_EQPT,["Plataforma Elevatória","Máquina de Solda","Lixadeira/Furadeira","Escada Marinheiro/Móvel"]),
+  bp:read(K_BP,["110/70","120/80","130/85"]),
+  cred:read(K_CRED,{texto:"Sistema desenvolvido pela equipe do SGI da Mecalux do Brasil. Uso interno. Proibida cópia/venda sem autorização."}),
+  base:read(K_AVB,[
+    {id:"treino",texto:"Treinamento da equipe (NRs aplicáveis)",peso:100,critico:true},
+    {id:"isolamento",texto:"Área isolada / LOTO / Permissões",peso:20,critico:false},
+    {id:"epi",texto:"EPI/EPC corretos e inspecionados",peso:20,critico:false},
+    {id:"resgate",texto:"Plano de emergência/resgate",peso:30,critico:false},
+    {id:"inspec",texto:"Inspeção pré-uso de equipamentos",peso:20,critico:false},
+    {id:"clima",texto:"Condição climática/fadiga adequada",peso:10,critico:false}
+  ]),
+  ava:read(K_AVA,{}),
+  ave:read(K_AVE,{}),
+  logo:read(K_LOGO,null),
+  emerg:read(K_EMERG,{ramal:"859", tst:"+55 19 98247-2752", amb:"+55 19 98369-5657", externos:[{nome:"Bombeiros",fone:"193",cod:""}]})
+};
+
+/* preferências */
+$("#themeSel").value=state.theme;
+$("#lang").value=state.lang;
+$("#signMode").value=state.sign;
+
+/* visual */
+$("#sysVersion").value=state.sys.version; $("#sysRevCode").value=state.sys.revCode; $("#sysRevDate").value=state.sys.revDate; $("#ptrSeq").value=state.ptr.pattern; $("#credTexto").value=state.cred.texto;
+if(state.logo){ $("#logoPreview").src=state.logo; }
+
+/* Logo */
+$("#logoFile").addEventListener("change",()=>{ const f=$("#logoFile").files?.[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ state.logo=r.result; $("#logoPreview").src=state.logo; }; r.readAsDataURL(f); });
+$("#btnLogoRemover").onclick=()=>{ state.logo=null; $("#logoPreview").removeAttribute("src"); $("#logoFile").value=""; };
+
+/* Locais */
+function renderLoc(){ $("#listaLocais").innerHTML=state.locais.map(l=>`<div class="list-row"><span>${l.name}</span><div class="row-actions"><button class="btn" data-e="${l.id}">Editar</button><button class="btn ghost" data-d="${l.id}">Excluir</button></div></div>`).join("") }
+onEnter($("#localNome"),()=>{const v=$("#localNome").value.trim(); if(!v)return; state.locais.push({id:Date.now(),name:v}); $("#localNome").value=""; renderLoc();});
+$("#listaLocais").onclick=e=>{const idE=e.target.getAttribute("data-e"), idD=e.target.getAttribute("data-d"); if(idE){const i=state.locais.findIndex(x=>String(x.id)===String(idE)); const n=prompt("Editar local:",state.locais[i].name); if(n){state.locais[i].name=n; renderLoc();}} if(idD){const i=state.locais.findIndex(x=>String(x.id)===String(idD)); if(i>=0) state.locais.splice(i,1), renderLoc();}};
+renderLoc();
+
+/* Pessoas */
+function renderP(){ $("#listaPessoas").innerHTML=state.pessoas.map(p=>`<div class="card thin"><div class="card-head"><h4>${p.nome}</h4><span class="badge">${p.cpf}</span></div><p class="muted">
+${Object.entries(p.perm||{}).filter(([_,v])=>v).map(([k])=>({exec:"Executor",emis:"Emissor",lider:"Líder",resp:"Resp. Equipe"}[k])).join(", ")||"—"}
+</p><p class="muted">NR-35: ${p.tr35||"—"} • NR-33: ${p.tr33||"—"}</p><div class="row-actions"><button class="btn" data-ep="${p.id}">Editar</button><button class="btn ghost" data-dp="${p.id}">Excluir</button></div></div>`).join("") }
+function savePessoa(){
+  const nome=$("#pNome").value.trim(), cpf=$("#pCPF").value.trim(); if(!nome||!cpf){alert("Nome e CPF/MATRÍCULA obrigatórios.");return;}
+  const perm={exec:$("#permExecutor").checked,emis:$("#permEmissor").checked,lider:$("#permLider").checked,resp:$("#permResp").checked};
+  const obj={id:(state.pessoas.find(p=>p.cpf===cpf)?.id)||Date.now(),nome,cpf,perm,tr35:$("#treina35").value||"",tr33:$("#treina33").value||""};
+  const i=state.pessoas.findIndex(p=>p.cpf===cpf); if(i>=0) state.pessoas[i]=obj; else state.pessoas.push(obj);
+  $("#pNome").value=$("#pCPF").value=$("#treina35").value=$("#treina33").value=""; $("#permExecutor").checked=$("#permEmissor").checked=$("#permLider").checked=$("#permResp").checked=false;
+  renderP();
+}
+onEnter($("#pCPF"),savePessoa);
+$("#listaPessoas").onclick=e=>{const idE=e.target.getAttribute("data-ep"), idD=e.target.getAttribute("data-dp");
+  if(idE){const p=state.pessoas.find(x=>String(x.id)===String(idE)); $("#pNome").value=p.nome; $("#pCPF").value=p.cpf; $("#permExecutor").checked=p.perm.exec; $("#permEmissor").checked=p.perm.emis; $("#permLider").checked=p.perm.lider; $("#permResp").checked=p.perm.resp; $("#treina35").value=p.tr35||""; $("#treina33").value=p.tr33||""; window.scrollTo({top:0,behavior:"smooth"});}
+  if(idD){const i=state.pessoas.findIndex(x=>String(x.id)===String(idD)); if(i>=0) state.pessoas.splice(i,1), renderP();}
+};
+renderP();
+
+/* Catálogos + Checklist */
+function renderCat(){ $("#listaAtv").innerHTML=state.atv.map((t,i)=>`<div class="list-row"><span>${t}</span><div class="row-actions"><button class="btn" data-ea="${i}">Editar</button><button class="btn ghost" data-da="${i}">Excluir</button></div></div>`).join("");
+  $("#listaEqp").innerHTML=state.eqp.map((t,i)=>`<div class="list-row"><span>${t}</span><div class="row-actions"><button class="btn" data-ee="${i}">Editar</button><button class="btn ghost" data-de="${i}">Excluir</button></div></div>`).join("");}
+function renderSelectors(){ $("#selAtv").innerHTML = state.atv.map(a=>`<option>${a}</option>`).join(""); $("#selEqp").innerHTML = state.eqp.map(a=>`<option>${a}</option>`).join("");}
+onEnter($("#catAtvItem"),()=>{const v=$("#catAtvItem").value.trim(); if(!v) return; state.atv.push(v); $("#catAtvItem").value=""; renderCat();renderSelectors();});
+onEnter($("#catEqpItem"),()=>{const v=$("#catEqpItem").value.trim(); if(!v) return; state.eqp.push(v); $("#catEqpItem").value=""; renderCat();renderSelectors();});
+$("#listaAtv").onclick=e=>{const ea=e.target.getAttribute("data-ea"), da=e.target.getAttribute("data-da"); if(ea){const n=prompt("Editar atividade:",state.atv[ea]); if(n){ state.atv[ea]=n; renderCat(); renderSelectors(); }} if(da){state.atv.splice(da,1); renderCat(); renderSelectors();}};
+$("#listaEqp").onclick=e=>{const ee=e.target.getAttribute("data-ee"), de=e.target.getAttribute("data-de"); if(ee){const n=prompt("Editar equipamento:",state.eqp[ee]); if(n){ state.eqp[ee]=n; renderCat(); renderSelectors(); }} if(de){state.eqp.splice(de,1); renderCat(); renderSelectors();}};
+renderCat(); renderSelectors();
+
+function renderBase(){ $("#listaBase").innerHTML=state.base.map((it,i)=>`
+  <div class="list-row"><span>${it.texto} ${it.critico?'<strong style="color:#7a120c">(Crítico)</strong>':''} • Peso ${it.peso}</span>
+  <div class="row-actions"><button class="btn" data-eb="${i}">Editar</button><button class="btn ghost" data-db="${i}">Excluir</button></div></div>`).join("")}
+onEnter($("#baseNovo"),()=>{const t=$("#baseNovo").value.trim(); if(!t)return; const peso=Math.max(0,Math.min(100,Number($("#basePeso").value||10))); const crit=$("#baseCritico").checked; state.base.push({id:`b_${Date.now()}`,texto:t,peso,critico:crit}); $("#baseNovo").value=""; renderBase();});
+$("#listaBase").onclick=e=>{const eb=e.target.getAttribute("data-eb"), db=e.target.getAttribute("data-db"); if(eb){const n=prompt("Editar item:",state.base[eb].texto); if(n){state.base[eb].texto=n; renderBase();}} if(db){state.base.splice(db,1); renderBase();}};
+renderBase();
+
+function renderAtvList(){const k=$("#selAtv").value; const arr=(state.ava[k]||[]); $("#listaAtvChk").innerHTML=arr.map((it,i)=>`<div class="list-row"><span>${it.texto} ${it.critico?'<strong style="color:#7a120c">(Crítico)</strong>':''} • Peso ${it.peso}</span><div class="row-actions"><button class="btn" data-eia="${i}">Editar</button><button class="btn ghost" data-dia="${i}">Excluir</button></div></div>`).join("")||"<p class='muted'>Nenhum item.</p>";}
+$("#selAtv").addEventListener("change",renderAtvList);
+onEnter($("#atvNovo"),()=>{const t=$("#atvNovo").value.trim(); if(!t)return; const peso=Math.max(0,Math.min(100,Number($("#atvPeso").value||10))); const crit=$("#atvCritico").checked; const k=$("#selAtv").value; state.ava[k]=state.ava[k]||[]; state.ava[k].push({id:`a_${Date.now()}`,texto:t,peso,critico:crit}); $("#atvNovo").value=""; renderAtvList();});
+$("#listaAtvChk").onclick=e=>{const ei=e.target.getAttribute("data-eia"), di=e.target.getAttribute("data-dia"); const k=$("#selAtv").value; if(ei){const n=prompt("Editar item:",state.ava[k][ei].texto); if(n){state.ava[k][ei].texto=n; renderAtvList();}} if(di){state.ava[k].splice(di,1); renderAtvList();}};
+$("#selAtv").dispatchEvent(new Event("change"));
+
+function renderEqpList(){const k=$("#selEqp").value; const arr=(state.ave[k]||[]); $("#listaEqpChk").innerHTML=arr.map((it,i)=>`<div class="list-row"><span>${it.texto} ${it.critico?'<strong style="color:#7a120c">(Crítico)</strong>':''} • Peso ${it.peso}</span><div class="row-actions"><button class="btn" data-eie="${i}">Editar</button><button class="btn ghost" data-die="${i}">Excluir</button></div></div>`).join("")||"<p class='muted'>Nenhum item.</p>";}
+$("#selEqp").addEventListener("change",renderEqpList);
+onEnter($("#eqpNovo"),()=>{const t=$("#eqpNovo").value.trim(); if(!t)return; const peso=Math.max(0,Math.min(100,Number($("#eqpPeso").value||10))); const crit=$("#eqpCritico").checked; const k=$("#selEqp").value; state.ave[k]=state.ave[k]||[]; state.ave[k].push({id:`e_${Date.now()}`,texto:t,peso,critico:crit}); $("#eqpNovo").value=""; renderEqpList();});
+$("#listaEqpChk").onclick=e=>{const ei=e.target.getAttribute("data-eie"), di=e.target.getAttribute("data-die"); const k=$("#selEqp").value; if(ei){const n=prompt("Editar item:",state.ave[k][ei].texto); if(n){state.ave[k][ei].texto=n; renderEqpList();}} if(di){state.ave[k].splice(di,1); renderEqpList();}};
+$("#selEqp").dispatchEvent(new Event("change"));
+
+/* Pressões */
+function renderBP(){ $("#listaBP").innerHTML=state.bp.map((v,i)=>`<div class="list-row"><span>${v}</span><div class="row-actions"><button class="btn ghost" data-dbp="${i}">Remover</button></div></div>`).join("") }
+onEnter($("#bpAdd"),()=>{const v=$("#bpAdd").value.replace(/\s+/g,""); if(!/^\d{2,3}\/\d{2,3}$/.test(v)){alert("Use ex.: 120/80");return;} if(!state.bp.includes(v)) state.bp.push(v); $("#bpAdd").value=""; renderBP();});
+$("#listaBP").onclick=e=>{const i=e.target.getAttribute("data-dbp"); if(i!==null){state.bp.splice(i,1); renderBP();}}
+renderBP();
+
+/* Emergência */
+$("#eRamal").value=state.emerg.ramal||""; $("#eTST").value=state.emerg.tst||""; $("#eAmb").value=state.emerg.amb||"";
+function renderExt(){ $("#listaExt").innerHTML = (state.emerg.externos||[]).map((x,i)=>`<div class="list-row"><span>${x.nome}: ${x.fone}${x.cod?` | Código ${x.cod}`:""}</span><div class="row-actions"><button class="btn" data-ee="${i}">Editar</button><button class="btn ghost" data-de="${i}">Excluir</button></div></div>`).join("") || "<p class='muted'>Nenhum número externo.</p>"; }
+renderExt();
+$("#extAdd").onclick=()=>{ const n=$("#extNome").value.trim(), f=$("#extFone").value.trim(), c=$("#extCode").value.trim(); if(!n||!f) return; state.emerg.externos.push({nome:n,fone:f,cod:c}); $("#extNome").value=$("#extFone").value=$("#extCode").value=""; renderExt(); }
+$("#listaExt").onclick=e=>{const ee=e.target.getAttribute("data-ee"), de=e.target.getAttribute("data-de"); if(ee){const x=state.emerg.externos[ee]; const n=prompt("Nome:",x.nome); if(n===null)return; const f=prompt("Telefone:",x.fone); if(f===null)return; const c=prompt("Código:",x.cod||""); state.emerg.externos[ee]={nome:n,fone:f,cod:c||""}; renderExt();} if(de){state.emerg.externos.splice(de,1); renderExt();}}
+
+/* Backup & Restore */
+function doBackup(){
+  const payload = { _schema:"ptr-backup-v1", when:new Date().toISOString(), data:{} };
+  APP_KEYS.forEach(k=> payload.data[k] = JSON.parse(localStorage.getItem(k) || "null"));
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `ptr-backup-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(a.href);
+}
+async function doRestore(file){
+  if(!file) return; const text=await file.text();
+  try{
+    const payload=JSON.parse(text);
+    if(payload._schema!=="ptr-backup-v1" || typeof payload.data!=="object"){ alert("Arquivo de backup inválido."); return; }
+    Object.entries(payload.data).forEach(([k,v])=>{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); });
+    alert("Backup restaurado ✅"); location.reload();
+  }catch{ alert("Falha ao ler o JSON do backup."); }
+}
+document.getElementById("btnBackup").onclick = doBackup;
+document.getElementById("inpRestore").addEventListener("change", e => doRestore(e.target.files?.[0]));
+
+/* Salvar/Reset */
+$("#btnSaveAll").onclick=()=>{ 
+  write(K_THEME,$("#themeSel").value);
+  write(K_LANG,$("#lang").value);
+  write(K_SIGN,$("#signMode").value);
+  write(K_SYS,{version:$("#sysVersion").value.trim(),revCode:$("#sysRevCode").value.trim(),revDate:$("#sysRevDate").value});
+  write(K_PTR,{pattern:$("#ptrSeq").value.trim()||"PTR-00000"});
+  write(K_LOCAIS,state.locais); write(K_PESSOAS,state.pessoas);
+  write(K_ATIV,state.atv); write(K_EQPT,state.eqp);
+  write(K_BP,state.bp);
+  write(K_CRED,{texto:$("#credTexto").value.trim()||state.cred.texto});
+  write(K_AVB,state.base); write(K_AVA,state.ava); write(K_AVE,state.ave);
+  write(K_LOGO,state.logo);
+  write(K_EMERG,{ramal:$("#eRamal").value.trim(), tst:$("#eTST").value.trim(), amb:$("#eAmb").value.trim(), externos:state.emerg.externos});
+  alert("Configurações salvas ✅"); location.reload();
+};
+$("#btnReset").onclick=()=>{ if(confirm("Limpar todas as configurações?")){ localStorage.clear(); location.reload(); } };
+</script>
+</body>
+</html>
