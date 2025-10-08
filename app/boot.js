@@ -1,42 +1,61 @@
-// BOOT: catálogos com rótulos i18n embutidos
+/* BOOT: catálogos, checklist e helpers de tema 100% completos */
+
+/* ====== Helpers globais de tema ====== */
+function applyTheme(mode) {
+  const m = (mode === 'dark') ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', m);
+  localStorage.setItem('SYS_THEME', m);
+}
+window.applyTheme = applyTheme; // deixa global
+
+/* ====== Catálogos e dados com rótulos i18n embutidos ====== */
 const BOOT = {
+  /* Locais de trabalho */
   LOCATIONS: [
-    {key:"adm", labels:{"pt-BR":"Prédio ADM","es":"Edificio ADM","en":"Admin Building"}},
+    {key:"adm",     labels:{"pt-BR":"Prédio ADM","es":"Edificio ADM","en":"Admin Building"}},
     {key:"fabrica", labels:{"pt-BR":"Fábrica","es":"Fábrica","en":"Factory"}},
-  ],
-  PEOPLE: [
-    {id:1,nome:"João Silva",cpf:"111.111.111-11",perm:{exec:true,resp:true}, tr35:"2025-01-01", tr33:"2025-01-01"},
-    {id:2,nome:"Maria Souza",cpf:"222.222.222-22",perm:{exec:true}, tr35:"2025-02-01"},
-    {id:3,nome:"Carlos Lima",cpf:"333.333.333-33",perm:{resp:true}},
+    {key:"log",     labels:{"pt-BR":"Logística","es":"Logística","en":"Logistics"}},
   ],
 
+  /* Pessoas (exemplo) */
+  PEOPLE: [
+    {id:1,nome:"João Silva",   cpf:"111.111.111-11",perm:{exec:true,resp:true}, tr35:"2026-01-01", tr33:"2026-02-01"},
+    {id:2,nome:"Maria Souza",  cpf:"222.222.222-22",perm:{exec:true},           tr35:"2026-03-01"},
+    {id:3,nome:"Carlos Lima",  cpf:"333.333.333-33",perm:{resp:true}},
+    {id:4,nome:"Flavio Queiroz",cpf:"000002",perm:{exec:true,resp:true}, tr35:"2026-02-10", tr33:"2026-08-10"},
+  ],
+
+  /* Atividades */
   ACTIVITIES: [
     {key:"trabalho_altura", labels:{"pt-BR":"Trabalho em Altura","es":"Trabajo en Altura","en":"Working at Height"}},
-    {key:"espaco_confinado", labels:{"pt-BR":"Espaço Confinado","es":"Espacio Confinado","en":"Confined Space"}},
-    {key:"eletricidade", labels:{"pt-BR":"Trabalho com Eletricidade","es":"Trabajo con Electricidad","en":"Electrical Work"}},
-    {key:"a_quente", labels:{"pt-BR":"Trabalho à Quente","es":"Trabajo en Caliente","en":"Hot Work"}},
-    {key:"icamento", labels:{"pt-BR":"Içamento de Materiais","es":"Izaje de Material","en":"Lifting Materials"}},
-    {key:"escavacao", labels:{"pt-BR":"Escavação","es":"Excavación","en":"Excavation"}},
+    {key:"espaco_confinado",labels:{"pt-BR":"Espaço Confinado","es":"Espacio Confinado","en":"Confined Space"}},
+    {key:"eletricidade",    labels:{"pt-BR":"Trabalho com Eletricidade","es":"Trabajo con Electricidad","en":"Electrical Work"}},
+    {key:"a_quente",        labels:{"pt-BR":"Trabalho à Quente","es":"Trabajo en Caliente","en":"Hot Work"}},
+    {key:"icamento",        labels:{"pt-BR":"Içamento de Materiais","es":"Izaje de Material","en":"Lifting Materials"}},
+    {key:"escavacao",       labels:{"pt-BR":"Escavação","es":"Excavación","en":"Excavation"}},
   ],
 
+  /* Equipamentos */
   EQUIPMENTS: [
-    {key:"pea", labels:{"pt-BR":"Plataforma Elevatória","es":"Plataforma Elevadora","en":"Boom Lift"}},
-    {key:"solda", labels:{"pt-BR":"Máquina de Solda","es":"Soldadora","en":"Welding Machine"}},
-    {key:"lixadeira", labels:{"pt-BR":"Lixadeira/Furadeira","es":"Lijadora/Taladro","en":"Grinder/Drill"}},
-    {key:"escada", labels:{"pt-BR":"Escada Marinheiro/Móvel","es":"Escalera Fija/Móvil","en":"Ladder"}},
+    {key:"pea",      labels:{"pt-BR":"Plataforma Elevatória","es":"Plataforma Elevadora","en":"Boom Lift"}},
+    {key:"solda",    labels:{"pt-BR":"Máquina de Solda","es":"Soldadora","en":"Welding Machine"}},
+    {key:"lixadeira",labels:{"pt-BR":"Lixadeira/Furadeira","es":"Lijadora/Taladro","en":"Grinder/Drill"}},
+    {key:"escada",   labels:{"pt-BR":"Escada Marinheiro/Móvel","es":"Escalera Fija/Móvil","en":"Ladder"}},
   ],
 
+  /* Riscos (mapeados por atividade) */
   RISKS: [
     {key:"queda_pessoa", activities:["trabalho_altura"], labels:{"pt-BR":"Queda de pessoas","es":"Caída de personas","en":"Fall of people"}},
-    {key:"queda_obj", activities:["trabalho_altura","icamento"], labels:{"pt-BR":"Queda de materiais","es":"Caída de objetos","en":"Falling objects"}},
-    {key:"baixo_o2", activities:["espaco_confinado"], labels:{"pt-BR":"Baixo O₂","es":"Bajo O₂","en":"Low O₂"}},
-    {key:"gas_tox", activities:["espaco_confinado"], labels:{"pt-BR":"Gás tóxico","es":"Gas tóxico","en":"Toxic gas"}},
-    {key:"arco", activities:["eletricidade"], labels:{"pt-BR":"Arco elétrico","es":"Arco eléctrico","en":"Arc flash"}},
-    {key:"incendio", activities:["a_quente"], labels:{"pt-BR":"Incêndio","es":"Incendio","en":"Fire"}},
-    {key:"queda_carga", activities:["icamento"], labels:{"pt-BR":"Queda da carga","es":"Caída de la carga","en":"Load drop"}},
-    {key:"soterr", activities:["escavacao"], labels:{"pt-BR":"Soterramento","es":"Sepultamiento","en":"Burial"}},
+    {key:"queda_obj",    activities:["trabalho_altura","icamento"], labels:{"pt-BR":"Queda de materiais","es":"Caída de objetos","en":"Falling objects"}},
+    {key:"baixo_o2",     activities:["espaco_confinado"], labels:{"pt-BR":"Baixo O₂","es":"Bajo O₂","en":"Low O₂"}},
+    {key:"gas_tox",      activities:["espaco_confinado"], labels:{"pt-BR":"Gás tóxico","es":"Gas tóxico","en":"Toxic gas"}},
+    {key:"arco",         activities:["eletricidade"],     labels:{"pt-BR":"Arco elétrico","es":"Arco eléctrico","en":"Arc flash"}},
+    {key:"incendio",     activities:["a_quente"],         labels:{"pt-BR":"Incêndio","es":"Incendio","en":"Fire"}},
+    {key:"queda_carga",  activities:["icamento"],         labels:{"pt-BR":"Queda da carga","es":"Caída de la carga","en":"Load drop"}},
+    {key:"soterr",       activities:["escavacao"],        labels:{"pt-BR":"Soterramento","es":"Sepultamiento","en":"Burial"}},
   ],
 
+  /* Checklist base (sempre aparece) */
   CHECK_BASE: [
     {id:"base_trein", critico:true, peso:100, labels:{"pt-BR":"Treinamento da equipe (NRs aplicáveis)","es":"Capacitación del equipo","en":"Team training"}},
     {id:"base_isol",  peso:20, labels:{"pt-BR":"Área isolada / LOTO / Permissões","es":"Área aislada / LOTO / Permisos","en":"Area isolated / LOTO / Permits"}},
@@ -46,15 +65,15 @@ const BOOT = {
     {id:"base_cond",  peso:10, labels:{"pt-BR":"Condição climática/fadiga adequada","es":"Condición climática/fatiga adecuada","en":"Weather/fatigue adequate"}},
   ],
 
-  // Itens de checklist por atividade/risco/equipamento
+  /* Checklist por atividade / risco / equipamento */
   CHECK_MAP: {
     activity:{
       "trabalho_altura":[
         {id:"atv_alt_anc", peso:20, labels:{"pt-BR":"Pontos de ancoragem definidos","es":"Puntos de anclaje definidos","en":"Anchorage points defined"}},
-        {id:"atv_alt_cint",peso:20, labels:{"pt-BR":"Cinto paraquedista + talabarte OK","es":"Arnés anticaídas + talabarte OK","en":"Full-body harness + lanyard OK"}},
+        {id:"atv_alt_cint",peso:20, labels:{"pt-BR":"Cinto paraquedista + talabarte OK","es":"Arnés anticaídas + talabarte OK","en":"Harness + lanyard OK"}},
       ],
       "espaco_confinado":[
-        {id:"atv_ec_perm",critico:true,peso:40, labels:{"pt-BR":"Permissão de Entrada e Trabalho emitida","es":"Permiso de Entrada y Trabajo emitido","en":"Entry Permit issued"}},
+        {id:"atv_ec_perm",critico:true,peso:40, labels:{"pt-BR":"PET emitida (Permissão de Entrada e Trabalho)","es":"PET emitido","en":"Entry Permit issued"}},
         {id:"atv_ec_monitor",peso:20, labels:{"pt-BR":"Monitoramento contínuo de gases","es":"Monitoreo continuo de gases","en":"Continuous gas monitoring"}},
       ],
       "eletricidade":[
@@ -81,4 +100,24 @@ const BOOT = {
       "queda_pessoa":[{id:"r_alt_zlq",peso:20, labels:{"pt-BR":"ZLQ calculada/atendida","es":"ZLQ calculada/atendida","en":"Free-fall clearance OK"}}],
       "queda_carga":[{id:"r_ica_acess",peso:20, labels:{"pt-BR":"Acessórios de içamento inspecionados","es":"Accesorios de izaje inspeccionados","en":"Lifting accessories inspected"}}],
       "soterr":[{id:"r_esc_acesso",peso:20, labels:{"pt-BR":"Acesso/escape garantido","es":"Acceso/escape garantizado","en":"Access/escape ensured"}}],
-      "gas_tox":[{id:"r_ec_epi",peso:20, labels
+      "gas_tox":[{id:"r_ec_epi",peso:20, labels:{"pt-BR":"EPI específico (ex.: respirador)","es":"EPP específico","en":"Specific PPE (e.g., respirator)"}}],
+    },
+    equip:{
+      "pea":[
+        {id:"e_pea_chk",peso:20, labels:{"pt-BR":"Checklist da PEMP (freios/controles)","es":"Checklist PEMP (frenos/controles)","en":"MEWP checklist (brakes/controls)"}},
+        {id:"e_pea_cinto",peso:10, labels:{"pt-BR":"Cinto conectado na ancoragem","es":"Arnés conectado a anclaje","en":"Harness hooked to anchor"}},
+      ],
+      "solda":[
+        {id:"e_solda_gases",peso:20, labels:{"pt-BR":"Gases/centelhamento controlados","es":"Gases/chispas controlados","en":"Gases/sparks controlled"}},
+      ],
+      "lixadeira":[
+        {id:"e_lixa_prot",peso:10, labels:{"pt-BR":"Protetor de disco instalado","es":"Protector de disco instalado","en":"Guard installed"}},
+      ],
+      "escada":[
+        {id:"e_esc_amarr",peso:10, labels:{"pt-BR":"Amarração/apoio adequados","es":"Amarre/apoyo adecuados","en":"Proper tie-off/support"}},
+      ],
+    }
+  }
+};
+
+window.BOOT = BOOT; // exporta global
