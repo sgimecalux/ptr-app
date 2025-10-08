@@ -1,143 +1,219 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a3d91">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title data-i18n="title">PTR</title>
 
-  <title>PTR</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
     }
   </script>
-
-  <!-- UI -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Libs (mantive como você usa hoje) -->
-  <script src="boot.js"></script>
-  <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="i18n.js"></script>
+  <script src="boot.js"></script>
 </head>
 <body>
 <header class="header-inline">
   <img id="logoHead" alt="logo">
-  <h1 id="title-ptr">PERMISSÃO DE TRABALHO DE RISCO - PTR</h1>
+  <h1 id="title-ptr" data-i18n="header.title">PERMISSÃO DE TRABALHO DE RISCO - PTR</h1>
 </header>
 
 <nav class="navbar">
-  <a data-nav="settings" href="settings.html">Configurações</a>
-  <a data-nav="dashboard" href="dashboard.html">Dashboard</a>
-  <a data-nav="reports" href="reports.html">Relatórios</a>
-  <a data-nav="help" href="help.html">Ajuda</a>
+  <a data-i18n="nav.settings" href="settings.html">Configurações</a>
+  <a data-i18n="nav.dashboard" href="dashboard.html">Dashboard</a>
+  <a data-i18n="nav.reports" href="reports.html">Relatórios</a>
+  <a data-i18n="nav.help" href="help.html">Ajuda</a>
 </nav>
 
 <main class="steps">
-  <!-- 1 -->
+  <!-- 1) Dados Iniciais -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step1">1) Dados Iniciais</h3><span class="badge">Obrigatório</span></div>
+    <div class="card-head">
+      <h3 data-i18n="step1.title">1) Dados Iniciais</h3>
+      <span class="badge" data-i18n="badges.required">Obrigatório</span>
+    </div>
     <div class="grid">
-      <label class="field"><span>Empresa</span><input id="empresa" type="text" value="Mecalux do Brasil"></label>
-      <label class="field"><span>Código PTR (sequencial)</span><input id="ptrCodigo" type="text" placeholder="PTR-00001"></label>
-      <label class="field"><span>Data</span><input id="data" type="date"></label>
-      <label class="field"><span>Hora</span><input id="hora" type="time" step="60" inputmode="numeric" pattern="[0-2][0-9]:[0-5][0-9]"></label>
-      <label class="field"><span>Setor</span><select id="setor"></select></label>
-      <label class="field"><span>Atividade (descrição livre)</span><input id="atividadeDesc" type="text"></label>
+      <label class="field">
+        <span data-i18n="fields.company">Empresa</span>
+        <input id="empresa" type="text" value="">
+      </label>
+
+      <label class="field">
+        <span data-i18n="fields.ptrcode">Código PTR (sequencial)</span>
+        <input id="ptrCodigo" type="text" placeholder="PTR-00001">
+      </label>
+
+      <label class="field">
+        <span data-i18n="fields.date">Data</span>
+        <input id="data" type="date">
+      </label>
+
+      <label class="field">
+        <span data-i18n="fields.time">Hora</span>
+        <input id="hora" type="time" step="60" inputmode="numeric" pattern="[0-2][0-9]:[0-5][0-9]">
+      </label>
+
+      <label class="field">
+        <span data-i18n="fields.sector">Setor</span>
+        <select id="setor"></select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="fields.activity_desc">Atividade (descrição livre)</span>
+        <input id="atividadeDesc" type="text">
+      </label>
     </div>
   </section>
 
-  <!-- 2 -->
+  <!-- 2) Tipos de Atividades -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step2">2) Tipos de Atividades</h3><span class="badge">Selecione</span></div>
+    <div class="card-head">
+      <h3 data-i18n="step2.title">2) Tipos de Atividades</h3>
+      <span class="badge" data-i18n="badges.select">Selecione</span>
+    </div>
     <div id="listaAtividades" class="list"></div>
-    <p class="muted">Edite em <strong>Configurações → Catálogos → Tipos de Atividade</strong>.</p>
+    <p class="muted" data-i18n="step2.hint">Edite em <strong>Configurações → Catálogos → Tipos de Atividade</strong>.</p>
   </section>
 
-  <!-- 3 -->
+  <!-- 3) Riscos -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step3">3) Riscos</h3><span class="badge">8 por atividade</span></div>
+    <div class="card-head">
+      <h3 data-i18n="step3.title">3) Riscos</h3>
+      <span class="badge" id="risksCount">—</span>
+    </div>
     <div id="riscosContainer" class="list"></div>
   </section>
 
-  <!-- 4 -->
+  <!-- 4) Equipamentos -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step4">4) Equipamentos</h3><span class="badge">Selecione</span></div>
+    <div class="card-head">
+      <h3 data-i18n="step4.title">4) Equipamentos</h3>
+      <span class="badge" data-i18n="badges.select">Selecione</span>
+    </div>
     <div id="listaEquip" class="list"></div>
-    <p class="muted">Edite em <strong>Configurações → Catálogos → Equipamentos</strong>.</p>
+    <p class="muted" data-i18n="step4.hint">Edite em <strong>Configurações → Catálogos → Equipamentos</strong>.</p>
   </section>
 
-  <!-- 5 -->
+  <!-- 5) Análise de Riscos & Checklist -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step5">5) Análise de Riscos & Checklist</h3><span id="scoreBadge" class="badge">Score: 100</span></div>
-    <div id="avaliacaoLista" class="list"></div>
+    <div class="card-head">
+      <h3 data-i18n="step5.title">5) Análise de Riscos & Checklist</h3>
+      <span class="badge" id="scoreBadge">Score: 100</span>
+    </div>
+    <div id="avaliacaoLista" class="list list-compact"></div>
     <p class="muted" id="scoreLegenda">100 • Itens conformes — liberar</p>
   </section>
 
-  <!-- 6 -->
+  <!-- 6) Executantes -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step6">6) Executantes da Atividade</h3><span class="badge">Assinatura obrigatória</span></div>
+    <div class="card-head">
+      <h3 data-i18n="step6.title">6) Executantes da Atividade</h3>
+      <span class="badge" data-i18n="badges.sign_required">Assinatura obrigatória</span>
+    </div>
     <div class="grid">
-      <label class="field"><span>Adicionar executante</span><select id="selExecutante"></select></label>
-      <div style="align-self:end"><button id="addExec" class="btn primary" type="button">+ Adicionar</button></div>
+      <label class="field">
+        <span data-i18n="fields.add_executor">Adicionar executante</span>
+        <select id="selExecutante"></select>
+      </label>
+      <div style="align-self:end">
+        <button id="addExec" class="btn primary" type="button" data-i18n="btn.add">+ Adicionar</button>
+      </div>
     </div>
     <div id="execList" class="list" style="margin-top:8px"></div>
   </section>
 
-  <!-- 7 -->
+  <!-- 7) Responsáveis -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step7">7) Responsáveis da Atividade</h3><span class="badge">3 assinaturas obrigatórias</span></div>
-    <div class="grid">
-      <label class="field"><span>Emissor</span><select id="respEmissor"></select></label>
-      <label class="field"><span>Líder do Setor</span><select id="respLider"></select></label>
-      <label class="field"><span>Responsável da Equipe</span><select id="respEquipe"></select></label>
+    <div class="card-head">
+      <h3 data-i18n="step7.title">7) Responsáveis da Atividade</h3>
+      <span class="badge" data-i18n="badges.three_required">3 assinaturas obrigatórias</span>
     </div>
+    <div class="grid">
+      <label class="field"><span data-i18n="fields.emissor">Emissor</span><select id="respEmissor"></select></label>
+      <label class="field"><span data-i18n="fields.leader">Líder do Setor</span><select id="respLider"></select></label>
+      <label class="field"><span data-i18n="fields.team_resp">Responsável da Equipe</span><select id="respEquipe"></select></label>
+    </div>
+
     <div class="grid" style="margin-top:12px;">
-      <div class="field"><span>Assinatura Emissor</span><div class="signpad" data-role="emissor"></div><div class="row-actions"><button class="btn" data-save-role="emissor">Salvar assinatura</button><button class="btn ghost" data-clear-role="emissor">Limpar</button></div></div>
-      <div class="field"><span>Assinatura Líder</span><div class="signpad" data-role="lider"></div><div class="row-actions"><button class="btn" data-save-role="lider">Salvar assinatura</button><button class="btn ghost" data-clear-role="lider">Limpar</button></div></div>
-      <div class="field"><span>Assinatura Resp. Equipe</span><div class="signpad" data-role="resp"></div><div class="row-actions"><button class="btn" data-save-role="resp">Salvar assinatura</button><button class="btn ghost" data-clear-role="resp">Limpar</button></div></div>
+      <div class="field">
+        <span data-i18n="fields.sign_emissor">Assinatura Emissor</span>
+        <div class="signpad" data-role="emissor"></div>
+        <div class="row-actions">
+          <button class="btn" data-save-role="emissor" data-i18n="btn.save_sign">Salvar assinatura</button>
+          <button class="btn ghost" data-clear-role="emissor" data-i18n="btn.clear">Limpar</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <span data-i18n="fields.sign_leader">Assinatura Líder</span>
+        <div class="signpad" data-role="lider"></div>
+        <div class="row-actions">
+          <button class="btn" data-save-role="lider" data-i18n="btn.save_sign">Salvar assinatura</button>
+          <button class="btn ghost" data-clear-role="lider" data-i18n="btn.clear">Limpar</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <span data-i18n="fields.sign_team">Assinatura Resp. Equipe</span>
+        <div class="signpad" data-role="resp"></div>
+        <div class="row-actions">
+          <button class="btn" data-save-role="resp" data-i18n="btn.save_sign">Salvar assinatura</button>
+          <button class="btn ghost" data-clear-role="resp" data-i18n="btn.clear">Limpar</button>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 8) Log NC -->
   <section class="card">
-    <div class="card-head"><h3 id="t-step8">8) Log de Não Conformidades</h3><span class="badge">Auto + editável</span></div>
-    <p class="muted">Esta área mostra automaticamente tudo que você marcou como <strong>NÃO</strong> no checklist; você pode complementar.</p>
+    <div class="card-head">
+      <h3 data-i18n="step8.title">8) Log de Não Conformidades</h3>
+      <span class="badge" data-i18n="badges.auto_edit">Auto + editável</span>
+    </div>
+    <p class="muted" data-i18n="step8.hint">Esta área mostra automaticamente tudo que você marcou como <strong>NÃO</strong> no checklist; você pode complementar.</p>
     <label class="field">
-      <span>Itens em não conformidade (um por linha)</span>
+      <span data-i18n="fields.nc_items">Itens em não conformidade (um por linha)</span>
       <textarea id="logNC" class="notes" placeholder="- [Crítico] Treinamento da equipe
-- Isolamento da área incompleto
-- ..."></textarea>
+- Isolamento da área incompleto"></textarea>
     </label>
   </section>
 </main>
 
-<div class="footer-actions">
-  <a class="btn" href="settings.html" data-nav="settings">Configurações</a>
-  <div style="display:flex;gap:8px;">
-    <a class="btn" href="dashboard.html" data-nav="dashboard">Dashboard</a>
-    <a class="btn" href="reports.html" data-nav="reports">Relatórios</a>
-    <a class="btn" href="help.html" data-nav="help">Ajuda</a>
-    <button id="btnSalvarRascunho" class="btn">Salvar Rascunho</button>
-    <button id="btnCancelar" class="btn ghost">Cancelar</button>
-    <button id="btnConcluir" class="btn primary">Concluir (PDF + ZIP)</button>
+<!-- Rodapé com Revisão -->
+<footer class="footer-bar">
+  <div class="rev-box">
+    <span data-i18n="footer.rev">Revisão:</span>
+    <strong id="revText">F-000 / 00 / 01/01/2025</strong>
+    <button id="btnRevisar" class="btn ghost" data-i18n="btn.revise">Revisar?</button>
   </div>
-</div>
+
+  <div class="footer-actions">
+    <a class="btn" href="settings.html" data-i18n="nav.settings">Configurações</a>
+    <div style="display:flex;gap:8px;">
+      <a class="btn" href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a>
+      <a class="btn" href="reports.html" data-i18n="nav.reports">Relatórios</a>
+      <a class="btn" href="help.html" data-i18n="nav.help">Ajuda</a>
+      <button id="btnSalvarRascunho" class="btn" data-i18n="btn.save_draft">Salvar Rascunho</button>
+      <button id="btnCancelar" class="btn ghost" data-i18n="btn.cancel">Cancelar</button>
+      <button id="btnConcluir" class="btn primary" data-i18n="btn.finish">Concluir (PDF + ZIP)</button>
+    </div>
+  </div>
+</footer>
 
 <!-- Área invisível para PDF -->
 <section id="report" class="print-report">
   <div style="display:flex;align-items:center;gap:12px">
     <img id="repLogo" alt="logo" style="max-height:26px;object-fit:contain">
-    <h2 style="margin:0">Permissão de Trabalho (PTR)</h2>
+    <h2 style="margin:0" data-i18n="report.title">Permissão de Trabalho (PTR)</h2>
   </div>
   <div class="print-grid" style="margin-top:12px">
     <div class="print-box" id="repInfo"></div>
@@ -152,13 +228,14 @@
     <div class="print-box" id="repCreditos"></div>
   </div>
   <p style="margin-top:10px;font-size:12px">
-    Código único: <strong id="repUUID"></strong> • Gerado em <span id="repTs"></span><br>
-    SHA-256 (JSON): <span id="repHash"></span>
+    <span data-i18n="report.uid">Código único:</span> <strong id="repUUID"></strong> •
+    <span data-i18n="report.gen">Gerado em</span> <span id="repTs"></span><br>
+    <span>SHA-256 (JSON):</span> <span id="repHash"></span>
   </p>
 </section>
 
 <script>
-/* ===== UTIL ===== */
+/* ===== util ===== */
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -169,117 +246,163 @@ async function sha256Hex(str){const enc=new TextEncoder().encode(str);const buf=
 function normTime(){const raw=($("#hora").value||"").replace(/\s/g,"");const m=raw.match(/^([01]\d|2[0-3]):([0-5]\d)$/);return m?`${m[1]}:${m[2]}`:nowTime()}
 $("#hora").addEventListener("input",e=>e.target.value=(e.target.value||"").replace(/\s/g,""));
 
-/* ===== CHAVES ===== */
+/* ===== keys ===== */
 const K_SYS="SYS_META",K_PTR="PTR_SEQ",K_SEQ="PTR_COUNTER";
 const K_LOCAIS="LOC_LIST",K_PESSOAS="PESSOAS";
-const K_ATIV="CAT_ATIVIDADES",K_EQPT="CAT_EQUIPAMENTOS";
+const K_ATIV="CAT_ATIVIDADES",K_EQPT="CAT_EQUIPAMENTOS",K_RISCO="CAT_RISCOS";
 const K_BP="BP_ALLOWED_GLOBAL",K_SIGN="SIGN_MODE",K_CRED="SYS_CREDITOS",K_LOGO="SYS_LOGO";
-const K_AVB="AVAL_BASE",K_AVA="AVAL_ATIVIDADES",K_AVE="AVAL_EQUIPAMENTOS";
+const K_AVB="AVAL_BASE",K_AVX="AVAL_XMAP"; // mapa checklist por atividade/risco/equip
 const K_ARCH="PTR_ARCHIVE",K_LOGS="PTR_LOGS";
+const K_REV="SYS_REV"; // revisão F-xxx / nn / dd/mm/aaaa
 
-/* ===== LOGO ===== */
-(function(){const l=read(K_LOGO,null); if(l){const i=$("#logoHead"); i.src=l; i.style.display="block";}})();
+/* ===== logo & idioma/theme ===== */
+(function initHeader(){
+  const l=read(K_LOGO,null); if(l){const i=$("#logoHead"); i.src=l; i.style.display="block";}
+  applyTheme(read("SYS_THEME","light"));
+  i18n_setLang(read("SYS_LANG","pt-BR"));
+})();
 
-/* ===== PREFILL ===== */
-const meta=read(K_SYS,{version:"1.0.0",revCode:"PTR-REV-A",revDate:todayISO()});
-$("#empresa").value="Mecalux do Brasil"; $("#data").value=todayISO(); $("#hora").value=nowTime();
-const seqPattern=read(K_PTR,{pattern:"PTR-00000"}).pattern; let seq=read(K_SEQ,1);
-function nextPTR(){const zeros=(seqPattern.match(/0/g)||[]).length||5;const num=String(seq).padStart(zeros,"0");return seqPattern.replace(/0+/,num)}
+/* ===== prefill meta & revisão ===== */
+const meta=read(K_SYS,{version:"1.0.0",revCode:"PTR-REV-A",revDate:todayISO(), empresa:"Mecalux do Brasil"});
+$("#empresa").value = meta.empresa || "";
+$("#data").value=todayISO(); $("#hora").value=nowTime();
+const seqPattern=read(K_PTR,{pattern:"PTR-00001"}).pattern; let seq=read(K_SEQ,1);
+function nextPTR(){const z=(seqPattern.match(/0/g)||[]).length||5;const num=String(seq).padStart(z,"0");return seqPattern.replace(/0+/,num)}
 $("#ptrCodigo").value=nextPTR();
 
-/* ===== CADASTROS ===== */
-const locais=read(K_LOCAIS,[{id:1,name:"Prédio ADM"}]);
-const pessoas=read(K_PESSOAS,[]);
-const catAtividades=read(K_ATIV,["Trabalho em Altura","Espaço Confinado","Trabalho com Eletricidade","Trabalho à Quente","Içamento de Materiais","Escavação"]);
-const catEquip=read(K_EQPT,["Plataforma Elevatória","Máquina de Solda","Lixadeira/Furadeira","Escada Marinheiro/Móvel"]);
+function fmtDateBR(d){const dt=new Date(d);const dd=("0"+dt.getDate()).slice(-2), mm=("0"+(dt.getMonth()+1)).slice(-2), yy=dt.getFullYear();return `${dd}/${mm}/${yy}`;}
+const rev=read(K_REV,{prefix:"F-000",rev:0,date:fmtDateBR(new Date())});
+function renderRev(){ $("#revText").textContent = `${rev.prefix} / ${String(rev.rev).padStart(2,"0")} / ${rev.date}`;}
+renderRev();
+$("#btnRevisar").onclick=()=>{ rev.rev++; rev.date=fmtDateBR(new Date()); write(K_REV,rev); renderRev(); };
+
+/* ===== catálogos & pessoas (vêm do boot.js) ===== */
+const locais = read(K_LOCAIS, BOOT.LOCATIONS);
+const pessoas = read(K_PESSOAS, BOOT.PEOPLE);
+const catAtividades = read(K_ATIV, BOOT.ACTIVITIES);
+const catEquip = read(K_EQPT, BOOT.EQUIPMENTS);
+const catRiscos = read(K_RISCO, BOOT.RISKS);
+const baseItems = read(K_AVB, BOOT.CHECK_BASE);
+const mapChecklist = read(K_AVX, BOOT.CHECK_MAP); // {activity:{}, risk:{}, equip:{}}
+
 const bp=read(K_BP,["110/70","120/80","130/85"]);
 const signMode=read(K_SIGN,"draw");
 const creditos=read(K_CRED,{texto:"Sistema desenvolvido pela equipe do SGI da Mecalux do Brasil. Uso interno. Proibida cópia/venda sem autorização."});
 
-/* ===== FORM ===== */
-$("#setor").innerHTML=`<option value="">Selecione…</option>`+locais.map(l=>`<option>${l.name}</option>`).join("");
-$("#listaAtividades").innerHTML=catAtividades.map(a=>`<label class="check"><input type="checkbox" value="${a}"> <span>${a}</span></label>`).join("");
-$("#listaEquip").innerHTML=catEquip.map(e=>`<label class="check"><input type="checkbox" value="${e}"> <span>${e}</span></label>`).join("");
+/* ===== preencher selects e listas (com i18n dinâmico) ===== */
+function labelLang(obj){return (obj.labels && obj.labels[i18n_lang]) || obj.name || obj;}
+$("#setor").innerHTML = `<option value="">${i18n('select')}</option>` + locais.map(l=>`<option>${labelLang(l)}</option>`).join("");
 
-/* ===== RISCOS ===== */
-const riscosPorAtv={
- "Trabalho em Altura":["Queda de pessoas","Queda de materiais","Falha de ancoragem","Clima adverso","Proximidade elétrica","Superfície escorregadia","Uso incorreto de EPI","Acesso inadequado"],
- "Espaço Confinado":["Baixo O2","Gás tóxico","Explosividade","Engolfamento","Resgate difícil","Iluminação insuficiente","Comunicação falha","Queda em abertura"],
- "Trabalho com Eletricidade":["Contato direto","Contato indireto","Arco elétrico","Falha de bloqueio","Ferramenta inadequada","Umidade","Atmosfera inflamável","Curto-circuito"],
- "Trabalho à Quente":["Incêndio","Fagulhas","Queimaduras","Fumaças","Explosividade","Combustíveis próximos","Vigia ausente","Ventilação insuficiente"],
- "Içamento de Materiais":["Queda da carga","Tombamento","Rede elétrica próxima","Sinalização deficiente","Acessório inadequado","Sobrecarga","Área sem isolamento","Vento forte"],
- "Escavação":["Soterramento","Queda de solo","Redes enterradas","Atmosfera perigosa","Água acumulada","Vibração","Acesso precário","Talude instável"]
-};
+function drawList(container, arr){
+  container.innerHTML = arr.map(a=>`<label class="check"><input type="checkbox" value="${a.key||a.name||a}"> <span>${labelLang(a)}</span></label>`).join("");
+}
+drawList($("#listaAtividades"), catAtividades);
+drawList($("#listaEquip"), catEquip);
+
+/* ===== riscos por atividade (mostra nomes corretos) ===== */
+function riscosByActivity(key){ // usa o catálogo RISKS com tags de activity key
+  return catRiscos.filter(r => (r.activities||[]).includes(key));
+}
 function renderRiscos(){
   const atvs=$$("#listaAtividades input:checked").map(i=>i.value);
-  $("#riscosContainer").innerHTML=atvs.map(a=>`
-   <div class="card thin">
-     <div class="card-head"><h4>${a}</h4><span class="badge">${(riscosPorAtv[a]||[]).length} riscos</span></div>
-     <div class="list">${(riscosPorAtv[a]||[]).slice(0,8).map(r=>`<label class="check"><input type="checkbox" checked> <span>${r}</span></label>`).join("")}</div>
-   </div>`).join("") || `<p class="muted">Selecione um Tipo de Atividade.</p>`;
+  let total=0;
+  $("#riscosContainer").innerHTML = atvs.map(a=>{
+    const ra=riscosByActivity(a);
+    total+=ra.length;
+    return `<div class="card thin">
+      <div class="card-head"><h4>${labelLang(catAtividades.find(x=>x.key===a) || {name:a})}</h4>
+        <span class="badge">${ra.length}</span></div>
+      <div class="list">
+        ${ra.map(r=>`<label class="check"><input type="checkbox" data-risk="${r.key}" checked> <span>${labelLang(r)}</span></label>`).join("")}
+      </div>
+    </div>`;
+  }).join("") || `<p class="muted">${i18n('msg.select_activity')}</p>`;
+  $("#risksCount").textContent = total? `${total} ${i18n('risks')}` : "—";
 }
-$("#listaAtividades").addEventListener("change",()=>{renderRiscos(); renderAval();});
-renderRiscos();
 
-/* ===== CHECKLIST ===== */
-const baseItems=read(K_AVB,[
- {id:"treino",texto:"Treinamento da equipe (NRs aplicáveis)",peso:100,critico:true},
- {id:"isolamento",texto:"Área isolada / LOTO / Permissões",peso:20,critico:false},
- {id:"epi",texto:"EPI/EPC corretos e inspecionados",peso:20,critico:false},
- {id:"resgate",texto:"Plano de emergência/resgate",peso:30,critico:false},
- {id:"inspec",texto:"Inspeção pré-uso de equipamentos",peso:20,critico:false},
- {id:"clima",texto:"Condição climática/fadiga adequada",peso:10,critico:false}
-]);
-const avalAtv=read(K_AVA,{}), avalEqp=read(K_AVE,{});
+/* ===== checklist real (base + por atividade/risco/equipamento) ===== */
 let allItems=[];
-function normalizedSix(arr,prefix){const b=(arr||[]).slice(0,6);while(b.length<6)b.push({id:`${prefix}_${b.length}`,texto:`Item ${b.length+1}`,peso:10,critico:false});return b}
-function radioRow(it){return `<div class="list-row"><span>${it.texto}${it.critico?' <strong style="color:#7a120c">(Crítico)</strong>':''}</span>
-  <div class="row-actions">
-    <label class="check"><input type="radio" name="a_${it.id}" value="SIM" checked> <span>SIM</span></label>
-    <label class="check"><input type="radio" name="a_${it.id}" value="NAO"> <span>NÃO</span></label>
-    <label class="check"><input type="radio" name="a_${it.id}" value="NA"> <span>N/A</span></label>
-  </div></div>`}
+function radioRow(it){
+  const critical = it.critico ? ` <strong class="crit">${i18n('critical')}</strong>` : "";
+  return `<div class="list-row">
+    <span>${labelLang(it)}${critical}</span>
+    <div class="options-inline">
+      <label class="check"><input type="radio" name="chk_${it.id}" value="SIM" checked> <span>${i18n('yes')}</span></label>
+      <label class="check"><input type="radio" name="chk_${it.id}" value="NAO"> <span>${i18n('no')}</span></label>
+      <label class="check"><input type="radio" name="chk_${it.id}" value="NA"> <span>${i18n('na')}</span></label>
+    </div>
+  </div>`;
+}
+function gatherChecklist(){
+  const atvKeys=$$("#listaAtividades input:checked").map(i=>i.value);
+  const eqKeys=$$("#listaEquip input:checked").map(i=>i.value);
+  const riskKeys=$$("#riscosContainer input[type=checkbox]:checked").map(i=>i.getAttribute("data-risk"));
+
+  const fromMap=(grp,keys)=> keys.flatMap(k=> (mapChecklist[grp][k]||[]));
+
+  const items = [
+    ...baseItems,
+    ...fromMap('activity', atvKeys),
+    ...fromMap('risk', riskKeys),
+    ...fromMap('equip', eqKeys),
+  ];
+
+  // remover duplicados por id
+  const seen=new Set(); const uniq=[];
+  items.forEach(x=>{ if(!seen.has(x.id)){ seen.add(x.id); uniq.push(x); }});
+  return uniq;
+}
 function renderAval(){
-  const atvs=$$("#listaAtividades input:checked").map(i=>i.value);
-  const eqps=$$("#listaEquip input:checked").map(i=>i.value);
-  const a=atvs.flatMap(x=>normalizedSix(avalAtv[x],`atv_${x}`));
-  const e=eqps.flatMap(x=>normalizedSix(avalEqp[x],`eqp_${x}`));
-  allItems=[...normalizedSix(baseItems,"base"),...a,...e];
-  $("#avaliacaoLista").innerHTML=allItems.map(radioRow).join("");
+  allItems = gatherChecklist();
+  $("#avaliacaoLista").innerHTML = allItems.map(radioRow).join("");
   $$(`#avaliacaoLista input[type=radio]`).forEach(r=>r.addEventListener("change",()=>{calcScore();updateNC();}));
   calcScore(); updateNC();
 }
 function calcScore(){
   let s=100;
   for(const it of allItems){
-    const v=(document.querySelector(`input[name="a_${it.id}"]:checked`)||{}).value||"SIM";
+    const v=(document.querySelector(`input[name="chk_${it.id}"]:checked`)||{}).value||"SIM";
     if(v==="NAO"){ if(it.critico){s=0;break;} s-=Number(it.peso||10); }
   }
   s=Math.max(0,Math.min(100,s));
-  $("#scoreBadge").textContent="Score: "+s;
-  $("#scoreLegenda").textContent = s===0?"0 • Crítica — não liberar": s<=25?`${s} • Crítica — não permitir`: s<=50?`${s} • Ação necessária — liberar com TST`: s<=75?`${s} • Ação necessária — liberar`: `${s} • Itens conformes — liberar`;
+  $("#scoreBadge").textContent=`${i18n('score')}: ${s}`;
+  $("#scoreLegenda").textContent = s===0?`0 • ${i18n('score.block')}`:
+    s<=25?`${s} • ${i18n('score.critical')}`:
+    s<=50?`${s} • ${i18n('score.need_tst')}`:
+    s<=75?`${s} • ${i18n('score.need_actions')}`:
+    `${s} • ${i18n('score.ok')}`;
   return s;
 }
-$("#listaEquip").addEventListener("change",()=>{renderAval();updateNC();});
-renderAval();
-
-/* ===== LOG NC (auto) ===== */
 function updateNC(){
   const linhas=[];
   for(const it of allItems){
-    const v=(document.querySelector(`input[name="a_${it.id}"]:checked`)||{}).value||"SIM";
-    if(v==="NAO") linhas.push(`- ${it.critico?"[Crítico] ":""}${it.texto}`);
+    const v=(document.querySelector(`input[name="chk_${it.id}"]:checked`)||{}).value||"SIM";
+    if(v==="NAO") linhas.push(`- ${it.critico?"[Crítico] ":""}${labelLang(it)}`);
   }
   const ta=$("#logNC"); if(!ta._touched || !ta.value.trim()){ ta.value = linhas.join("\n"); }
 }
 $("#logNC").addEventListener("input",e=>e.target._touched=true);
 
-/* ===== Executantes & Assinaturas ===== */
-function isAlturaOuConfinado(){const a=$$("#listaAtividades input:checked").map(i=>i.value);return a.includes("Trabalho em Altura")||a.includes("Espaço Confinado")}
-function renderSelExec(){const execs=pessoas.filter(p=>p.perm?.exec);$("#selExecutante").innerHTML=`<option value="">Selecione…</option>`+execs.map(p=>`<option value="${p.id}">${p.nome} (${p.cpf})</option>`).join("")}
+/* ===== eventos que impactam riscos e checklist ===== */
+$("#listaAtividades").addEventListener("change",()=>{renderRiscos(); renderAval();});
+$("#listaEquip").addEventListener("change",()=>{renderAval();});
+document.addEventListener("change",e=>{
+  if(e.target.matches("#riscosContainer input[type=checkbox]")) renderAval();
+});
+renderRiscos(); renderAval();
+
+/* ===== executantes + assinaturas (mesmo comportamento anterior) ===== */
+function isAlturaOuConfinado(){
+  const a=$$("#listaAtividades input:checked").map(i=>i.value);
+  return a.includes("trabalho_altura") || a.includes("espaco_confinado");
+}
+function renderSelExec(){
+  const execs=pessoas.filter(p=>p.perm?.exec);
+  $("#selExecutante").innerHTML=`<option value="">${i18n('select')}</option>`+execs.map(p=>`<option value="${p.id}">${p.nome} (${p.cpf})</option>`).join("");
+}
 renderSelExec();
 
-function mountSig(container,mode){
+function mountSig(container,mode){ // igual à versão anterior (desenho/câmera/upload)
   container._dirty=false; container._saved=null;
   const fitSize = () => Math.max(260, Math.min(560, Math.floor(container.clientWidth || 420)));
 
@@ -290,7 +413,7 @@ function mountSig(container,mode){
     setSize(); new ResizeObserver(setSize).observe(container);
 
     container.innerHTML=""; container.appendChild(c);
-    const ctx=c.getContext("2d"); ctx.lineWidth=2; ctx.lineCap="round"; ctx.strokeStyle="#0b1d2a";
+    const ctx=c.getContext("2d"); ctx.lineWidth=2; ctx.lineCap="round"; ctx.strokeStyle="var(--ink)";
     let draw=false,last=null; const pos=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
     const start=e=>{draw=true; last=pos(e)}; const move=e=>{if(!draw)return;const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;container._dirty=true}; const end=()=>draw=false;
     c.addEventListener("mousedown",start);c.addEventListener("mousemove",move);window.addEventListener("mouseup",end);
@@ -299,59 +422,44 @@ function mountSig(container,mode){
     container._clear=()=>{ctx.clearRect(0,0,c.width,c.height);container._dirty=false;container._saved=null;}
     return;
   }
-  if(mode==="facial"){
-    container.innerHTML=`<div class="cam-box"><video autoplay playsinline muted></video><canvas style="display:none"></canvas>
-      <div class="row-actions"><button class="btn" data-start>Ativar câmera</button><button class="btn" data-cap disabled>Capturar</button><button class="btn ghost" data-retake disabled>Refazer</button></div>
-      <img class="sign-pad-img" style="display:none"></div>`;
-    const video=container.querySelector("video"), canvas=container.querySelector("canvas"), img=container.querySelector("img");
-    const bS=container.querySelector("[data-start]"), bC=container.querySelector("[data-cap]"), bR=container.querySelector("[data-retake]");
-    let stream=null;
-    async function startCam(){ try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}); video.srcObject=stream; await video.play(); bC.disabled=false; bR.disabled=true; }catch{ alert("Sem acesso à câmera. Verifique permissões."); } }
-    function stop(){ if(stream){stream.getTracks().forEach(t=>t.stop()); stream=null;} }
-    bS.onclick=()=>startCam();
-    bC.onclick=()=>{ if(!video.srcObject){alert("Ative a câmera.");return;} canvas.width=video.videoWidth; canvas.height=video.videoHeight; canvas.getContext("2d").drawImage(video,0,0,canvas.width,canvas.height); const data=canvas.toDataURL("image/png"); img.src=data; img.style.display="block"; container._dirty=true; container._saved=data; bR.disabled=false; stop(); };
-    bR.onclick=()=>{ img.style.display="none"; container._dirty=false; container._saved=null; startCam(); };
-    container._getData=()=> container._dirty ? (container._saved||null) : null;
-    container._clear=()=>{ stop(); img.style.display="none"; container._dirty=false; container._saved=null; };
-    return;
-  }
+  // modo "upload" simplificado
   container.innerHTML=`<input type="file" accept="image/*" class="upSig"><img class="sign-pad-img" style="display:none">`;
   const inp=container.querySelector(".upSig"), img=container.querySelector("img");
   inp.addEventListener("change",()=>{const f=inp.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{img.src=r.result;img.style.display="block";container._dirty=true};r.readAsDataURL(f);});
   container._getData=()=> container._dirty ? img.src : null;
   container._clear=()=>{img.src="";img.style.display="none";inp.value="";container._dirty=false}
 }
-
 function linhaExec(p){
   const precisaPA=isAlturaOuConfinado();
   return `<div class="card thin" data-person="${p.id}">
     <div class="card-head"><h4>${p.nome}</h4><span class="badge">—</span></div>
     ${precisaPA?`<div class="grid">
-      <label class="field"><span>Pressão arterial (ex.: 120/80) — ou N/A</span><input class="inp-pa" type="text" placeholder="120/80"></label>
-      <label class="check" style="align-self:end;"><input class="inp-pa-na" type="checkbox"> <span>N/A</span></label>
-    </div>`:`<p class="muted">PA não exigida para as atividades selecionadas.</p>`}
-    <div class="field" style="margin-top:8px;"><span>Assinatura</span><div class="signpad"></div></div>
-    <div class="row-actions" style="margin-top:6px;"><button class="btn" data-save>Salvar assinatura</button><button class="btn ghost" data-clear>Limpar</button><button class="btn ghost" data-rem>Remover</button></div>
+      <label class="field"><span>${i18n('bp.label')}</span><input class="inp-pa" type="text" placeholder="120/80"></label>
+      <label class="check" style="align-self:end;"><input class="inp-pa-na" type="checkbox"> <span>${i18n('bp.na')}</span></label>
+    </div>`:`<p class="muted">${i18n('bp.not_required')}</p>`}
+    <div class="field" style="margin-top:8px;"><span>${i18n('fields.signature')}</span><div class="signpad"></div></div>
+    <div class="row-actions" style="margin-top:6px;">
+      <button class="btn" data-save>${i18n('btn.save_sign')}</button>
+      <button class="btn ghost" data-clear>${i18n('btn.clear')}</button>
+      <button class="btn ghost" data-rem>${i18n('btn.remove')}</button>
+    </div>
   </div>`;
 }
 function paOk(str,na){ if(na) return true; if(!str) return false; const v=str.replace(/\s+/g,""); return bp.includes(v); }
-function treinaOk(p,atvs){ const h=new Date();h.setHours(0,0,0,0); const v35=!p.tr35||new Date(p.tr35)<h; const v33=!p.tr33||new Date(p.tr33)<h; if(atvs.includes("Trabalho em Altura")&&v35) return false; if(atvs.includes("Espaço Confinado")&&v33) return false; return true; }
+function treinaOk(p,atvs){ const h=new Date();h.setHours(0,0,0,0); const v35=!p.tr35||new Date(p.tr35)<h; const v33=!p.tr33||new Date(p.tr33)<h; if(atvs.includes("trabalho_altura")&&v35) return false; if(atvs.includes("espaco_confinado")&&v33) return false; return true; }
 function refreshExecCard(card,id){
   const atvs=$$("#listaAtividades input:checked").map(i=>i.value), p=pessoas.find(x=>String(x.id)===String(id));
   const okPA=!isAlturaOuConfinado()?true:paOk(card.querySelector(".inp-pa")?.value, card.querySelector(".inp-pa-na")?.checked);
   const okTR=treinaOk(p,atvs);
-  const ok=okPA&&okTR; const b=card.querySelector(".badge"); b.textContent=ok?"APTO":"INAPTO"; b.className=`badge ${ok?'good':'bad'}`; return ok;
+  const ok=okPA&&okTR; const b=card.querySelector(".badge"); b.textContent=ok?i18n('fit'):i18n('unfit'); b.className=`badge ${ok?'good':'bad'}`; return ok;
 }
-function renderSelExec(){const execs=pessoas.filter(p=>p.perm?.exec);$("#selExecutante").innerHTML=`<option value="">Selecione…</option>`+execs.map(p=>`<option value="${p.id}">${p.nome} (${p.cpf})</option>`).join("")}
-renderSelExec();
-
 $("#addExec").onclick=()=>{
   const id=$("#selExecutante").value; if(!id || $(`#execList [data-person="${id}"]`)) return;
   const p=pessoas.find(x=>String(x.id)===String(id)); const wrap=document.createElement("div"); wrap.innerHTML=linhaExec(p); const card=wrap.firstElementChild; $("#execList").appendChild(card);
   const pad=card.querySelector(".signpad"); mountSig(pad,signMode);
   card.addEventListener("click",(e)=>{
     if(e.target.hasAttribute("data-rem")) card.remove();
-    if(e.target.hasAttribute("data-save")){ const d=pad._getData?.(); if(!d){alert("Assinatura vazia.");return;} pad._saved=d; alert("Assinatura salva ✅"); }
+    if(e.target.hasAttribute("data-save")){ const d=pad._getData?.(); if(!d){alert(i18n('msg.empty_sign'));return;} pad._saved=d; alert(i18n('msg.saved')); }
     if(e.target.hasAttribute("data-clear")){ pad._clear?.(); pad._saved=null; }
   });
   card.addEventListener("input",()=>refreshExecCard(card,id));
@@ -359,10 +467,10 @@ $("#addExec").onclick=()=>{
 };
 $("#listaAtividades").addEventListener("change",()=> $$("#execList .card").forEach(c=>refreshExecCard(c,c.dataset.person)));
 
-/* Assinaturas dos responsáveis */
+/* Assinaturas Responsáveis */
 function attachRespButtons(){
   $$("[data-save-role]").forEach(btn=>{
-    const role=btn.getAttribute("data-save-role"); btn.onclick=()=>{ const box=$(`.signpad[data-role="${role}"]`); const d=box._getData?.(); if(!d){alert("Assinatura vazia.");return;} box._saved=d; alert("Assinatura salva ✅"); };
+    const role=btn.getAttribute("data-save-role"); btn.onclick=()=>{ const box=$(`.signpad[data-role="${role}"]`); const d=box._getData?.(); if(!d){alert(i18n('msg.empty_sign'));return;} box._saved=d; alert(i18n('msg.saved')); };
   });
   $$("[data-clear-role]").forEach(btn=>{
     const role=btn.getAttribute("data-clear-role"); btn.onclick=()=>{ const box=$(`.signpad[data-role="${role}"]`); box._clear?.(); box._saved=null; };
@@ -371,20 +479,20 @@ function attachRespButtons(){
 $$(".signpad[data-role]").forEach(box=>mountSig(box,signMode));
 attachRespButtons();
 
-/* Rascunho/Cancelar */
-$("#btnSalvarRascunho").onclick=()=>{ write("PTR_DRAFT",collect()); alert("Rascunho salvo ✅"); };
-$("#btnCancelar").onclick=()=>{ if(confirm("Descartar tudo?")){ localStorage.removeItem("PTR_DRAFT"); location.reload(); } };
+/* rascunho/cancelar */
+$("#btnSalvarRascunho").onclick=()=>{ write("PTR_DRAFT",collect()); alert(i18n('msg.draft_saved')); };
+$("#btnCancelar").onclick=()=>{ if(confirm(i18n('msg.discard'))){ localStorage.removeItem("PTR_DRAFT"); location.reload(); } };
 
-/* Coletar/Validar */
+/* coletar/validar/relatório/pdf/zip – igual base com textos i18n */
 function collect(){
   const atvs=$$("#listaAtividades input:checked").map(i=>i.value);
   const eqps=$$("#listaEquip input:checked").map(i=>i.value);
   const riscos=Array.from($("#riscosContainer").querySelectorAll(".card.thin")).map(card=>{
-    const titulo=card.querySelector("h4")?.textContent||""; const rs=Array.from(card.querySelectorAll("input[type=checkbox]")).map(c=>({nome:c.parentElement.textContent.trim(),marcado:c.checked}));
+    const titulo=card.querySelector("h4")?.textContent||""; const rs=Array.from(card.querySelectorAll("input[type=checkbox]")).map(c=>({nome:c.parentElement.textContent.trim(),marcado=c.checked}));
     return {atividade:titulo,riscos:rs};
   });
-  const aval={}; for(const it of allItems){ aval[it.id]=(document.querySelector(`input[name="a_${it.id}"]:checked`)||{}).value||"SIM"; }
-  const nc_items=Object.keys(aval).filter(id=>aval[id]==="NAO").map(id=>allItems.find(x=>x.id===id)).filter(Boolean).map(it=>({texto:it.texto,critico:!!it.critico}));
+  const aval={}; for(const it of allItems){ aval[it.id]=(document.querySelector(`input[name="chk_${it.id}"]:checked`)||{}).value||"SIM"; }
+  const nc_items=Object.keys(aval).filter(id=>aval[id]==="NAO").map(id=>allItems.find(x=>x.id===id)).filter(Boolean).map(it=>({texto:labelLang(it),critico:!!it.critico}));
   const execs=$$("#execList .card").map(card=>{
     const id=card.dataset.person, p=pessoas.find(x=>String(x.id)===String(id));
     const pa=card.querySelector(".inp-pa")?.value||"", paNA=card.querySelector(".inp-pa-na")?.checked||false;
@@ -407,35 +515,33 @@ function collect(){
 }
 function validate(p){
   const timeOK=/^([01]\d|2[0-3]):([0-5]\d)$/.test(p.hora);
-  if(!p.empresa||!p.ptr||!p.data||!timeOK||!p.setor){ alert("Preencha Empresa, Código PTR, Data, Hora (HH:MM) e Setor."); return false; }
-  if(!p.atividades.length){ alert("Selecione ao menos um Tipo de Atividade."); return false; }
-  if(!p.executantes.length){ alert("Inclua ao menos um executante."); return false; }
-  for(const e of p.executantes){ if(!e._signed||!e.assinatura){ alert(`Executante ${e.nome}: assinatura obrigatória.`); return false; } if(!e.apto){ alert(`Executante ${e.nome} está INAPTO.`); return false; } }
-  if(!p.responsaveis.emissor||!p.responsaveis.lider||!p.responsaveis.resp){ alert("Selecione Emissor, Líder e Responsável da Equipe."); return false; }
-  if(!p._dirtyResp.emissor||!p._dirtyResp.lider||!p._dirtyResp.resp||!p.assinaturaResp.emissor||!p.assinaturaResp.lider||!p.assinaturaResp.resp){ alert("Assinaturas de Emissor, Líder e Responsável são obrigatórias."); return false; }
-  if(p.score<=25){ alert(`Score ${p.score} — condição não permite liberar a PTR.`); return false; }
+  if(!p.empresa||!p.ptr||!p.data||!timeOK||!p.setor){ alert(i18n('val.fill_required')); return false; }
+  if(!p.atividades.length){ alert(i18n('val.select_activity')); return false; }
+  if(!p.executantes.length){ alert(i18n('val.add_executor')); return false; }
+  for(const e of p.executantes){ if(!e._signed||!e.assinatura){ alert(i18n('val.exec_sign').replace('%',e.nome)); return false; } if(!e.apto){ alert(i18n('val.exec_unfit').replace('%',e.nome)); return false; } }
+  if(!p.responsaveis.emissor||!p.responsaveis.lider||!p.responsaveis.resp){ alert(i18n('val.select_responsibles')); return false; }
+  if(!p._dirtyResp.emissor||!p._dirtyResp.lider||!p._dirtyResp.resp||!p.assinaturaResp.emissor||!p.assinaturaResp.lider||!p.assinaturaResp.resp){ alert(i18n('val.sign_resp')); return false; }
+  if(p.score<=25){ alert(i18n('val.score_block').replace('%',p.score)); return false; }
   return true;
 }
-
-/* Report/PDF/ZIP */
 function fillReport(p,uid,hash){
   const nomePorId=id=>(pessoas.find(x=>String(x.id)===String(id))||{}).nome||"—";
   const set=(id,html)=>$("#"+id).innerHTML=html;
   const logo=read(K_LOGO,null); const repLogo=$("#repLogo"); if(logo){repLogo.src=logo;} else {repLogo.removeAttribute("src");}
-  set("repInfo",`<h4>Dados</h4><p><b>Empresa:</b> ${p.empresa}</p><p><b>PTR:</b> ${p.ptr}</p><p><b>Data:</b> ${p.data} • <b>Hora:</b> ${p.hora}</p><p><b>Setor:</b> ${p.setor}</p><p><b>Atividade:</b> ${p.atividadeDesc||"—"}</p>`);
-  set("repMeta",`<h4>Metadados</h4><p><b>Versão:</b> v${p._meta.version}</p><p><b>Revisão:</b> ${p._meta.revCode} • ${p._meta.revDate}</p><p><b>Código único:</b> ${uid}</p>`);
-  set("repAtividades",`<h4>Atividades</h4><ul>${p.atividades.map(a=>`<li>${a}</li>`).join("")}</ul>`);
-  set("repRiscos",`<h4>Riscos</h4>${p.riscos.map(r=>`<div><b>${r.atividade}</b><ul>${r.riscos.filter(x=>x.marcado).map(x=>`<li>${x.nome}</li>`).join("")||"<li>—</li>"}</ul></div>`).join("")}`);
-  set("repEquip",`<h4>Equipamentos</h4><ul>${p.equipamentos.map(e=>`<li>${e}</li>`).join("")||"<li>—</li>"}</ul>`);
+  set("repInfo",`<h4>${i18n('rep.data')}</h4><p><b>${i18n('fields.company')}:</b> ${p.empresa}</p><p><b>PTR:</b> ${p.ptr}</p><p><b>${i18n('fields.date')}:</b> ${p.data} • <b>${i18n('fields.time')}:</b> ${p.hora}</p><p><b>${i18n('fields.sector')}:</b> ${p.setor}</p><p><b>${i18n('fields.activity_desc')}:</b> ${p.atividadeDesc||"—"}</p>`);
+  set("repMeta",`<h4>${i18n('rep.meta')}</h4><p><b>${i18n('rep.version')}:</b> v${p._meta.version}</p><p><b>${i18n('rep.revision')}:</b> ${p._meta.revCode} • ${p._meta.revDate}</p><p><b>${i18n('rep.uid_short')}:</b> ${uid}</p>`);
+  set("repAtividades",`<h4>${i18n('rep.activities')}</h4><ul>${p.atividades.map(a=>`<li>${labelLang(catAtividades.find(x=>x.key===a)||{name:a})}</li>`).join("")}</ul>`);
+  set("repRiscos",`<h4>${i18n('rep.risks')}</h4>${p.riscos.map(r=>`<div><b>${r.atividade}</b><ul>${r.riscos.filter(x=>x.marcado).map(x=>`<li>${x.nome}</li>`).join("")||"<li>—</li>"}</ul></div>`).join("")}`);
+  set("repEquip",`<h4>${i18n('rep.equip')}</h4><ul>${p.equipamentos.map(e=>`<li>${labelLang(catEquip.find(x=>x.key===e)||{name:e})}</li>`).join("")||"<li>—</li>"}</ul>`);
   set("repScore",`<h4>Score</h4><p><b>${p.score}</b></p>`);
-  set("repExecutantes",`<h4>Executantes</h4>${p.executantes.map(e=>`<div style="margin:6px 0"><div><b>${e.nome}</b> (${e.cpf}) — ${e.apto?"APTO":"INAPTO"}</div><div>PA: ${e.paNA?"N/A":(e.pa||"—")}</div>${e.assinatura?`<img class="sign-pad-img" src="${e.assinatura}">`:""}</div>`).join("")}`);
-  set("repResponsaveis",`<h4>Responsáveis</h4>
-    <div><b>Emissor:</b> ${nomePorId(p.responsaveis.emissor)}</div>${p.assinaturaResp.emissor?`<img class="sign-pad-img" src="${p.assinaturaResp.emissor}">`:""}
-    <div style="margin-top:6px"><b>Líder:</b> ${nomePorId(p.responsaveis.lider)}</div>${p.assinaturaResp.lider?`<img class="sign-pad-img" src="${p.assinaturaResp.lider}">`:""}
-    <div style="margin-top:6px"><b>Resp. Equipe:</b> ${nomePorId(p.responsaveis.resp)}</div>${p.assinaturaResp.resp?`<img class="sign-pad-img" src="${p.assinaturaResp.resp}">`:""}`);
+  set("repExecutantes",`<h4>${i18n('rep.executors')}</h4>${p.executantes.map(e=>`<div style="margin:6px 0"><div><b>${e.nome}</b> (${e.cpf}) — ${e.apto?i18n('fit'):i18n('unfit')}</div><div>${i18n('bp.short')}: ${e.paNA?"N/A":(e.pa||"—")}</div>${e.assinatura?`<img class="sign-pad-img" src="${e.assinatura}">`:""}</div>`).join("")}`);
+  set("repResponsaveis",`<h4>${i18n('rep.responsibles')}</h4>
+    <div><b>${i18n('fields.emissor')}:</b> ${nomePorId(p.responsaveis.emissor)}</div>${p.assinaturaResp.emissor?`<img class="sign-pad-img" src="${p.assinaturaResp.emissor}">`:""}
+    <div style="margin-top:6px"><b>${i18n('fields.leader')}:</b> ${nomePorId(p.responsaveis.lider)}</div>${p.assinaturaResp.lider?`<img class="sign-pad-img" src="${p.assinaturaResp.lider}">`:""}
+    <div style="margin-top:6px"><b>${i18n('fields.team_resp')}:</b> ${nomePorId(p.responsaveis.resp)}</div>${p.assinaturaResp.resp?`<img class="sign-pad-img" src="${p.assinaturaResp.resp}">`:""}`);
   const ncText = (p.naoConformidades?.texto||"").split(/\r?\n/).filter(Boolean).map(s=>`<li>${s.replace(/^-+\s*/,'')}</li>`).join("") || "<li>—</li>";
-  set("repNC",`<h4>Log de Não Conformidades</h4><ul>${ncText}</ul>`);
-  set("repCreditos",`<h4>Créditos & Aviso</h4><p>${p._creditos.texto}</p>`);
+  set("repNC",`<h4>${i18n('rep.nc')}</h4><ul>${ncText}</ul>`);
+  set("repCreditos",`<h4>${i18n('rep.credits')}</h4><p>${p._creditos.texto}</p>`);
   $("#repUUID").textContent=uid; $("#repTs").textContent=new Date().toLocaleString(); $("#repHash").textContent=hash;
 }
 async function renderPDF(){
@@ -447,14 +553,12 @@ async function renderPDF(){
   let sY=0, first=true;
   while(sY<canvas.height){
     const c=document.createElement("canvas"); c.width=canvas.width; c.height=Math.min(pageHpx, canvas.height-sY);
-    c.getContext("2d").drawImage(canvas,0,sY,canvas.width,c.height,0,0,c.width,c.height);
+    c.getContext("2d").drawImage(canvas,0, sY, canvas.width, c.height, 0,0,c.width,c.height);
     if(!first) pdf.addPage(); first=false; pdf.addImage(c.toDataURL("image/png"),"PNG",20,20,imgW,c.height*ratio,"","FAST");
     sY+=pageHpx;
   }
   return pdf.output("blob");
 }
-
-/* Concluir */
 $("#btnConcluir").onclick=async()=>{
   const p=collect(); if(!validate(p)) return;
   write(K_SEQ, ++seq);
@@ -477,21 +581,27 @@ $("#btnConcluir").onclick=async()=>{
   saveAs(zipBlob, `${base}-${dd}-${mm}-${yyyy}.zip`);
   saveAs(pdfBlob, pdfName);
 
-  const archive=read(K_ARCH,[]);
-  archive.push({uid,hash,ptr:p.ptr,data:p.data,hora:p.hora,setor:p.setor,atividades:p.atividades,equipamentos:p.equipamentos,
-    executantes:p.executantes.map(e=>({id:e.id,nome:e.nome,cpf:e.cpf})),
-    naoConformidades:p.naoConformidades,
-    responsaveis:p.responsaveis, createdAt:new Date().toISOString(), json:p});
+  // arquiva para dashboard/relatórios com status liberada x não liberada
+  const liberada = p.score>75;
+  const archive=read(K_ARCH,[]); archive.push({status:liberada?'liberada':'nao_liberada', ptr:p.ptr, data:p.data, atividades:p.atividades, equipamentos:p.equipamentos, createdAt:new Date().toISOString(), json:p});
   write(K_ARCH,archive);
 
-  const logs=read(K_LOGS,[]);
-  p.atividades.forEach(a=>logs.push({type:"atividade",nome:a,data:p.data,createdAt:new Date().toISOString()}));
+  const logs=read(K_LOGS,[]); p.atividades.forEach(a=>logs.push({type:"atividade",nome:a,data:p.data,createdAt:new Date().toISOString()}));
   p.equipamentos.forEach(e=>logs.push({type:"equip",nome:e,data:p.data,createdAt:new Date().toISOString()}));
   p.executantes.forEach(x=>logs.push({type:"executor",nome:x.nome,data:p.data,createdAt:new Date().toISOString()}));
   write(K_LOGS,logs);
 
-  alert("PDF + ZIP gerados e registro arquivado ✅");
+  alert(i18n('msg.done'));
 };
+
+/* popula responsáveis e empresa default */
+(function fillPeople(){
+  const resp = pessoas.filter(p=>p.perm?.resp);
+  ["respEmissor","respLider","respEquipe"].forEach(id=>{
+    $("#"+id).innerHTML = `<option value="">${i18n('select')}</option>` + resp.map(p=>`<option value="${p.id}">${p.nome}</option>`).join("");
+  });
+  if(!$("#empresa").value) $("#empresa").value = "Mecalux do Brasil";
+})();
 </script>
 </body>
 </html>
